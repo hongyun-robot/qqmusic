@@ -41,28 +41,29 @@ class _TextIconState extends State<TextIcon> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (event) {
-        setState(() {
-          showWidget = Text(widget.routerItem.explain);
-        });
-      },
-      onExit: (event) {
-        setState(() {
-          showWidget = Icon(widget.icon);
-        });
-      },
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: Duration(milliseconds: 150),
-          width: 94,
-          height: 52,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
+    return Expanded(
+      child: MouseRegion(
+        onEnter: (event) {
+          setState(() {
+            showWidget = Text(widget.routerItem.explain);
+          });
+        },
+        onExit: (event) {
+          setState(() {
+            showWidget = Icon(widget.icon);
+          });
+        },
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 150),
+            height: 52,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
+            ),
+            child: Center(child: showWidget),
           ),
-          child: Center(child: showWidget),
         ),
       ),
     );

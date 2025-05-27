@@ -19,6 +19,6 @@ samples, guidance on mobile development, and a full API reference.
 
 仿照qq音乐桌面端来开发，flutter练手项目。
 
-- [] 完成基本页面开发
-- [] 接入 api 
-- [] 实现精简模式
+- [ ] 完成基本页面开发
+- [ ] 接入 api 
+- [ ] 实现精简模式

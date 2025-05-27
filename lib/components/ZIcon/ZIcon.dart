@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qqmusic/const/icon-style.dart';
 
 class ZIcon extends StatefulWidget {
   const ZIcon({
@@ -8,6 +9,7 @@ class ZIcon extends StatefulWidget {
     this.onTap,
     this.hoverColor,
     this.size,
+    this.disabled,
     super.key,
   });
 
@@ -17,6 +19,7 @@ class ZIcon extends StatefulWidget {
   final Color color;
   final Color? hoverColor;
   final double? size;
+  final bool? disabled;
 
   @override
   State<ZIcon> createState() => _ZIconState();
@@ -49,7 +52,10 @@ class _ZIconState extends State<ZIcon> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor: SystemMouseCursors.click,
+      cursor:
+          widget.disabled == true
+              ? SystemMouseCursors.basic
+              : SystemMouseCursors.click,
       onEnter: (event) {
         if (widget.hoverColor != null) {
           _controller.forward();
@@ -59,7 +65,13 @@ class _ZIconState extends State<ZIcon> with SingleTickerProviderStateMixin {
         _controller.reverse();
       },
       child: GestureDetector(
-        onTap: widget.onTap,
+        onTap: () {
+          if (widget.disabled != true) {
+            if (widget.onTap != null) {
+              widget.onTap!();
+            }
+          }
+        },
         child: Tooltip(
           message: widget.message,
           padding: EdgeInsets.all(0),
@@ -74,7 +86,10 @@ class _ZIconState extends State<ZIcon> with SingleTickerProviderStateMixin {
             builder: (context, child) {
               return Icon(
                 widget.icon,
-                color: _colorAnimation.value,
+                color:
+                    widget.disabled == true
+                        ? ICON_STYLE.disableColor
+                        : _colorAnimation.value,
                 size: widget.size,
               );
             },
