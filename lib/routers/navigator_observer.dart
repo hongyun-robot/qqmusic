@@ -15,6 +15,9 @@ class RouteHistoryObserver {
   }
 
   void didPush(GoRouterState state) {
+    if (currentIndex < pathHistory.length) {
+      currentIndex = pathHistory.length;
+    }
     print('push');
     history.add(state);
     indexAdd();
