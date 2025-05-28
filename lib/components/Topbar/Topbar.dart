@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qqmusic/components/ZIcon/ZIcon.dart';
 import 'package:qqmusic/const/icon-style.dart';
+import 'package:qqmusic/routers/navigator_observer.dart';
 import 'package:window_manager/window_manager.dart';
 
 class Topbar extends StatelessWidget {
@@ -9,8 +10,14 @@ class Topbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool backIconDisabled = true;
-    bool frontIconDisabled = true;
+    int currentIndex = routeHistoryObserver.currentIndex;
+    List<String> pathHistory = routeHistoryObserver.pathHistory;
+    bool backIconDisabled = currentIndex == 0 || pathHistory.isEmpty;
+    bool frontIconDisabled =
+        pathHistory.isEmpty || pathHistory.length <= currentIndex;
+
+    print('current ${currentIndex}');
+
     return Container(
       height: 53,
       padding: EdgeInsets.fromLTRB(42, 10, 23, 10),
@@ -34,12 +41,11 @@ class Topbar extends StatelessWidget {
               size: 21,
               onTap: () {
                 var r = GoRouter.of(context);
-                if (r.canPop()) {
-                  // todo: 实现回退功能
-                  backIconDisabled = false;
-                  r.pop();
+                int index = routeHistoryObserver.didPop(r.state);
+                if (index == 0) {
+                  r.go('/recommend');
                 } else {
-                  backIconDisabled = true;
+                  r.go(pathHistory[--index]);
                 }
               },
             ),
@@ -52,6 +58,8 @@ class Topbar extends StatelessWidget {
               message: '前进',
               size: 21,
               onTap: () {
+                int index = routeHistoryObserver.indexAdd();
+                GoRouter.of(context).go(pathHistory[--index]);
                 // windowManager.minimize();
               },
             ),
@@ -62,6 +70,9 @@ class Topbar extends StatelessWidget {
               hoverColor: ICON_STYLE.hoverColor,
               message: '刷新',
               size: 21,
+              onTap: () {
+                GoRouter.of(context).refresh();
+              },
             ),
             Spacer(),
             ZIcon(

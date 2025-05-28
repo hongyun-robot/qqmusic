@@ -4,7 +4,6 @@ import 'package:qqmusic/components/Topbar/Topbar.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({required this.child, super.key});
-
   final Widget child;
 
   @override

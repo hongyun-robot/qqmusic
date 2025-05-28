@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qqmusic/components/Sidebar/components/TextIcon.dart';
 import 'package:qqmusic/components/Sidebar/components/TextIcon2.dart';
 import 'package:qqmusic/const/const.dart';
+import 'package:qqmusic/routers/navigator_observer.dart';
 
 class Sidebar extends StatefulWidget {
   const Sidebar({required this.constraints, super.key});
@@ -32,7 +33,9 @@ class _SidebarState extends State<Sidebar> {
                   icon: Icons.home_rounded,
                   routerItem: ROUTER_NAME.recommend,
                   onTap: () {
-                    GoRouter.of(context).pushNamed(ROUTER_NAME.recommend.name);
+                    GoRouter.of(context).push('/${ROUTER_NAME.recommend.name}');
+                    var state = GoRouter.of(context).state;
+                    routeHistoryObserver.didPush(state);
                   },
                 ),
                 TextIcon(
@@ -40,6 +43,8 @@ class _SidebarState extends State<Sidebar> {
                   routerItem: ROUTER_NAME.musichall,
                   onTap: () {
                     GoRouter.of(context).pushNamed(ROUTER_NAME.musichall.name);
+                    var state = GoRouter.of(context).state;
+                    routeHistoryObserver.didPush(state);
                   },
                 ),
               ],
@@ -55,6 +60,8 @@ class _SidebarState extends State<Sidebar> {
                   routerItem: ROUTER_NAME.like,
                   onTap: () {
                     GoRouter.of(context).pushNamed(ROUTER_NAME.like.name);
+                    var state = GoRouter.of(context).state;
+                    routeHistoryObserver.didPush(state);
                   },
                 ),
                 TextIcon2(
@@ -63,6 +70,8 @@ class _SidebarState extends State<Sidebar> {
                   routerItem: ROUTER_NAME.recently,
                   onTap: () {
                     GoRouter.of(context).pushNamed(ROUTER_NAME.recently.name);
+                    var state = GoRouter.of(context).state;
+                    routeHistoryObserver.didPush(state);
                   },
                 ),
                 TextIcon2(
@@ -72,6 +81,8 @@ class _SidebarState extends State<Sidebar> {
                     GoRouter.of(
                       context,
                     ).pushNamed(ROUTER_NAME.localdownload.name);
+                    var state = GoRouter.of(context).state;
+                    routeHistoryObserver.didPush(state);
                   },
                 ),
                 TextIcon2(
@@ -80,6 +91,8 @@ class _SidebarState extends State<Sidebar> {
                   routerItem: ROUTER_NAME.purchased,
                   onTap: () {
                     GoRouter.of(context).pushNamed(ROUTER_NAME.purchased.name);
+                    var state = GoRouter.of(context).state;
+                    routeHistoryObserver.didPush(state);
                   },
                 ),
                 TextIcon2(
@@ -89,6 +102,8 @@ class _SidebarState extends State<Sidebar> {
                     GoRouter.of(
                       context,
                     ).pushNamed(ROUTER_NAME.triallistening.name);
+                    var state = GoRouter.of(context).state;
+                    routeHistoryObserver.didPush(state);
                   },
                 ),
               ],

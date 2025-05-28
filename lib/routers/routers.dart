@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qqmusic/const/const.dart';
-import 'package:qqmusic/pages/LikePage/LikePage.dart';
-import 'package:qqmusic/pages/LocalDownload/LocalDownloadPage.dart';
-import 'package:qqmusic/pages/MusicHallPage/MusicHallPage.dart';
-import 'package:qqmusic/pages/Purchased/PurchasedPage.dart';
-import 'package:qqmusic/pages/Recently/RecentlyPage.dart';
-import 'package:qqmusic/pages/RecommendPage/RecommendPage.dart';
-import 'package:qqmusic/pages/TrialListening/TrialListeningPage.dart';
+import 'package:qqmusic/pages/like/like_page.dart';
+import 'package:qqmusic/pages/local_download/local_download_page.dart';
+import 'package:qqmusic/pages/music_hall/music_hall_page.dart';
+import 'package:qqmusic/pages/purchased/purchased_page.dart';
+import 'package:qqmusic/pages/recently/recently_page.dart';
+import 'package:qqmusic/pages/recommend/recommend_page.dart';
+import 'package:qqmusic/pages/trial_listening/trial_listening_page.dart';
 import 'package:qqmusic/pages/home.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
