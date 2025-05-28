@@ -74,12 +74,13 @@ class _TextIcon2State extends State<TextIcon2> {
             borderRadius: BorderRadius.all(Radius.circular(12)),
             color: color,
           ),
-          padding: EdgeInsets.fromLTRB(17, 18, 17, 16),
+          padding: EdgeInsets.fromLTRB(17, 17, 17, 15),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(iconData, weight: 19),
-              SizedBox(width: 10),
-              Text(widget.routerItem.explain),
+              Icon(iconData, size: 20),
+              SizedBox(width: 8),
+              Text(widget.routerItem.explain, style: TextStyle(fontSize: 14.0)),
             ],
           ),
         ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qqmusic/components/ZIcon/ZIcon.dart';
+import 'package:qqmusic/components/z_icon/z_icon.dart';
 import 'package:qqmusic/const/icon-style.dart';
 import 'package:qqmusic/routers/navigator_observer.dart';
 import 'package:window_manager/window_manager.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qqmusic/components/Sidebar/components/TextIcon.dart';
-import 'package:qqmusic/components/Sidebar/components/TextIcon2.dart';
+import 'package:qqmusic/components/sidebar/components/text_icon.dart';
+import 'package:qqmusic/components/sidebar/components/text_icon2.dart';
 import 'package:qqmusic/const/const.dart';
 import 'package:qqmusic/routers/navigator_observer.dart';
 
@@ -22,7 +22,7 @@ class _SidebarState extends State<Sidebar> {
     return SizedBox(
       width: 220,
       child: Padding(
-        padding: const EdgeInsets.all(11.0),
+        padding: const EdgeInsets.only(right: 11.0),
         child: Column(
           children: [
             Row(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:qqmusic/components/Sidebar/Sidebar.dart';
-import 'package:qqmusic/components/Topbar/Topbar.dart';
+import 'package:qqmusic/components/player/player.dart';
+import 'package:qqmusic/components/sidebar/sidebar.dart';
+import 'package:qqmusic/components/topbar/topbar.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({required this.child, super.key});
@@ -13,7 +14,7 @@ class HomePage extends StatelessWidget {
         return Scaffold(
           backgroundColor: Color.fromRGBO(240, 240, 240, 1.0),
           body: Padding(
-            padding: const EdgeInsets.all(5.0),
+            padding: const EdgeInsets.all(12.0),
             child: Row(
               children: [
                 SafeArea(child: Sidebar(constraints: constraints)),
@@ -33,16 +34,14 @@ class HomePage extends StatelessWidget {
                             ),
                             SizedBox(height: 12),
                             Container(
+                              height: 77,
                               decoration: BoxDecoration(
                                 color: Color.fromRGBO(246, 246, 246, 1.0),
                                 borderRadius: const BorderRadius.all(
                                   Radius.circular(8),
                                 ),
                               ),
-                              child: BottomAppBar(
-                                height: 77,
-                                color: Colors.transparent,
-                              ),
+                              child: Player(),
                             ),
                           ],
                         ),
