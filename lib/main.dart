@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qqmusic/routers/routers.dart';
+import 'package:qqmusic/theme/theme.dart' show GlobalThemData;
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -28,6 +29,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(title: 'QQ Music Demo', routerConfig: routers);
+    return MaterialApp.router(
+      title: 'QQ Music Demo',
+      routerConfig: routers,
+      theme: GlobalThemData.lightThemeData,
+    );
   }
 }

@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
             padding: const EdgeInsets.all(12.0),
             child: Row(
               children: [
-                SafeArea(child: Sidebar(constraints: constraints)),
+                SafeArea(child: Sidebar()),
                 Expanded(
                   child: Column(
                     children: [

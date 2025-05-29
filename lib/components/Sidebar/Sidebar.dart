@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qqmusic/components/sidebar/components/profile.dart';
 import 'package:qqmusic/components/sidebar/components/text_icon.dart';
 import 'package:qqmusic/components/sidebar/components/text_icon2.dart';
 import 'package:qqmusic/const/const.dart';
 import 'package:qqmusic/routers/navigator_observer.dart';
 
-class Sidebar extends StatefulWidget {
-  const Sidebar({required this.constraints, super.key});
-
-  final BoxConstraints constraints;
-
-  @override
-  State<Sidebar> createState() => _SidebarState();
-}
-
-class _SidebarState extends State<Sidebar> {
-  var selectedIndex = 0;
+class Sidebar extends StatelessWidget {
+  const Sidebar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +17,8 @@ class _SidebarState extends State<Sidebar> {
         padding: const EdgeInsets.only(right: 11.0),
         child: Column(
           children: [
+            Profile(),
+            SizedBox(height: 67),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               spacing: 8,
