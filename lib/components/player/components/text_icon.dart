@@ -1,8 +1,12 @@
+/*
+ * @author: hongyun
+ * @since: 2025-05-29
+ * z_icon.dart
+*/
 import 'package:flutter/material.dart';
-import 'package:qqmusic/const/icon-style.dart';
 
-class ZIcon extends StatefulWidget {
-  const ZIcon({
+class TextIcon extends StatefulWidget {
+  const TextIcon({
     required this.icon,
     required this.color,
     this.message = '',
@@ -10,22 +14,23 @@ class ZIcon extends StatefulWidget {
     this.hoverColor,
     this.size,
     this.disabled,
+    this.padding,
     super.key,
   });
 
   final String message;
-  final IconData icon;
+  final EdgeInsetsGeometry? padding;
+  final String icon;
   final void Function()? onTap;
   final Color color;
   final Color? hoverColor;
   final double? size;
   final bool? disabled;
-
   @override
-  State<ZIcon> createState() => _ZIconState();
+  State<TextIcon> createState() => _ZIconState();
 }
 
-class _ZIconState extends State<ZIcon> with SingleTickerProviderStateMixin {
+class _ZIconState extends State<TextIcon> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation;
 
@@ -52,26 +57,17 @@ class _ZIconState extends State<ZIcon> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor:
-          widget.disabled == true
-              ? SystemMouseCursors.basic
-              : SystemMouseCursors.click,
+      cursor: SystemMouseCursors.click,
       onEnter: (event) {
-        if (widget.hoverColor != null) {
-          _controller.forward();
-        }
+        _controller.forward();
       },
       onExit: (event) {
-        if (widget.hoverColor != null) {
-          _controller.reverse();
-        }
+        _controller.reverse();
       },
       child: GestureDetector(
         onTap: () {
-          if (widget.disabled != true) {
-            if (widget.onTap != null) {
-              widget.onTap!();
-            }
+          if (widget.onTap != null) {
+            widget.onTap!();
           }
         },
         child: Tooltip(
@@ -86,13 +82,19 @@ class _ZIconState extends State<ZIcon> with SingleTickerProviderStateMixin {
           child: AnimatedBuilder(
             animation: _colorAnimation,
             builder: (context, child) {
-              return Icon(
-                widget.icon,
-                color:
-                    widget.disabled == true
-                        ? ICON_STYLE.disableColor
-                        : _colorAnimation.value,
-                size: widget.size,
+              return Container(
+                padding: widget.padding,
+                decoration: BoxDecoration(
+                  border: Border.all(color: _colorAnimation.value as Color),
+                  borderRadius: BorderRadius.circular(3.5),
+                ),
+                child: Text(
+                  widget.icon,
+                  style: TextStyle(
+                    color: _colorAnimation.value,
+                    fontSize: widget.size,
+                  ),
+                ),
               );
             },
           ),

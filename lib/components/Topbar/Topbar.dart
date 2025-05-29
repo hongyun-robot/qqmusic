@@ -16,7 +16,7 @@ class Topbar extends StatelessWidget {
     bool frontIconDisabled =
         pathHistory.isEmpty || pathHistory.length <= currentIndex;
 
-    print('current ${currentIndex}');
+    print('current $currentIndex');
 
     return Container(
       height: 53,
