@@ -3,13 +3,56 @@
  * @since: 2025-05-29
  * login_dialog.dart
 */
+import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:qqmusic/api/user/user.dart' show UserApi;
 import 'package:qqmusic/components/z_icon/z_icon.dart';
 import 'package:qqmusic/const/const.dart'
     show DEFAULT_ICON_COLOR, PRIMARY_ICON_COLOR;
+import 'package:qqmusic/model/login_qr.dart';
+import 'package:qqmusic/net/network_manager.dart';
 
-class LoginDialog extends StatelessWidget {
+class LoginDialog extends StatefulWidget {
   const LoginDialog({super.key});
+
+  @override
+  State<LoginDialog> createState() => _LoginDialogState();
+}
+
+class _LoginDialogState extends State<LoginDialog> {
+  Uint8List? imgBytes;
+  String message = '';
+
+  @override
+  void initState() {
+    super.initState();
+    // NetworkManager().request('/user/getLoginQr/qq').then((value) {
+    //   LoginQr loginQr = LoginQr.fromJson(value.data);
+    //   String code = loginQr.img!.split(',')[1];
+    //   setState(() {
+    //     imgBytes = Base64Decoder().convert(code);
+    //   });
+    // });
+    final userApi = UserApi();
+    userApi.getLoginQr().then((value) {
+      setState(() {
+        imgBytes = value;
+      });
+
+      Timer.periodic(const Duration(seconds: 2), (timer) async {
+        var value = await userApi.checkLoginQr();
+        if (value != null) {
+          if (value.refresh != null && value.refresh as bool) timer.cancel();
+          setState(() {
+            message = value.message;
+          });
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,12 +110,13 @@ class LoginDialog extends StatelessWidget {
               decoration: BoxDecoration(
                 border: Border.all(color: DEFAULT_ICON_COLOR),
               ),
-              child: Placeholder(),
+              child: imgBytes != null ? Image.memory(imgBytes!) : Placeholder(),
             ),
             SizedBox(height: 102),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Text(message),
                 Text('密码登录'),
                 SizedBox(width: 40),
                 Text('注册账号'),
