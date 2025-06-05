@@ -7,7 +7,7 @@ class CustomInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     Logger.instance.d(
-      'API Request [${options.method}] ${options.baseUrl + options.path}',
+      'API Request [${options.method}] ${options.uri.toString()}',
     );
     return handler.next(options);
   }
@@ -21,6 +21,9 @@ class CustomInterceptor extends Interceptor {
       data: response.data,
     );
     response.data = baseResponse;
+    Logger.instance.d(
+      'API Response [${response.realUri}] ${response.statusCode} ${response.statusMessage}',
+    );
     return handler.next(response);
   }
 

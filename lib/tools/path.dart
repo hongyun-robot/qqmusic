@@ -3,6 +3,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:qqmusic/tools/constant.dart' show homePathDirName;
 import 'package:qqmusic/tools/logger.dart' show Logger;
 import 'package:qqmusic/tools/platform.dart' show PlatformTool;
+import 'package:intl/intl.dart';
 
 class PathHelper {
   /// 单例
@@ -63,8 +64,10 @@ class PathHelper {
     return homePathDirName;
   }
 
-  String get getLogfilePath {
-    return '$getHomePath/qqmusic-demo.log';
+  String get getLogFilePath {
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('yyyy-MM-dd').format(now);
+    return '$getHomePath/$formattedDate-qqmusic-demo.log';
   }
 
   String get getCachePath {
@@ -78,7 +81,7 @@ class PathHelper {
       'documentsPath': documentsPath,
       'supportPath': supportPath,
       'homePath': getHomePath,
-      'logfilePath': getLogfilePath,
+      'logfilePath': getLogFilePath,
     };
   }
 }

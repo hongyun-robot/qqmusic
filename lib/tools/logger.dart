@@ -15,7 +15,7 @@ class Logger {
     output: logger.MultiOutput([
       logger.ConsoleOutput(),
       if (!PlatformTool.isWeb())
-        logger.FileOutput(file: File(PathHelper().getLogfilePath)),
+        logger.FileOutput(file: File(PathHelper().getLogFilePath)),
     ]),
   );
 }

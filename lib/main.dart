@@ -27,7 +27,7 @@ void main() async {
 
   await PathHelper().init();
 
-  UserApi().init();
+  await UserApi().init();
 
   FlutterError.onError = (FlutterErrorDetails details) {
     if (details.library == 'rendering library' ||

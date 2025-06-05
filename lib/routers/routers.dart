@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qqmusic/bloc/user_bloc.dart';
 import 'package:qqmusic/components/transition_resolver.dart';
 import 'package:qqmusic/const/const.dart';
 import 'package:qqmusic/pages/like/like_page.dart';
@@ -10,6 +11,7 @@ import 'package:qqmusic/pages/recently/recently_page.dart';
 import 'package:qqmusic/pages/recommend/recommend_page.dart';
 import 'package:qqmusic/pages/trial_listening/trial_listening_page.dart';
 import 'package:qqmusic/pages/home.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
   debugLabel: 'root',
@@ -24,9 +26,28 @@ final GoRouter routers = GoRouter(
   routes: <RouteBase>[
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
+      // pageBuilder: (context, state) {
+      //   return MultiBlocProvider(
+      //     providers: [
+      //       BlocProvider(
+      //         create: (context) => SubjectBloc(),
+      //       ),
+      //       BlocProvider(
+      //         create: (context) => SubjectBloc(),
+      //       ),
+      //     ],
+      //     child: HomePage(),
+      //   )
+      // },
       builder: (BuildContext context, GoRouterState state, Widget child) {
-        return HomePage(child: child);
+        return MultiBlocProvider(
+          providers: [BlocProvider(create: (context) => UserBloc())],
+          child: HomePage(child: child),
+        );
       },
+      // builder: (context, state, child) {
+      //   return HomePage(child: child);
+      // },
       routes: <RouteBase>[
         GoRoute(
           path: '/${ROUTER_NAME.recommend.name}',

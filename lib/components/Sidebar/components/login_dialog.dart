@@ -9,17 +9,13 @@ import 'dart:io' show File;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart'
-    show getApplicationDocumentsDirectory;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qqmusic/api/user/user.dart' show UserApi;
+import 'package:qqmusic/bloc/user_bloc.dart';
 import 'package:qqmusic/components/z_icon/z_icon.dart';
 import 'package:qqmusic/const/const.dart'
     show DEFAULT_ICON_COLOR, PRIMARY_ICON_COLOR;
 import 'package:qqmusic/model/cookie.dart';
-import 'package:qqmusic/model/login_qr.dart';
-import 'package:qqmusic/net/network_manager.dart';
-import 'package:qqmusic/tools/constant.dart' show cookiePathDirName;
-import 'package:qqmusic/tools/path.dart';
 
 class LoginDialog extends StatefulWidget {
   const LoginDialog({super.key});
@@ -33,25 +29,9 @@ class _LoginDialogState extends State<LoginDialog> {
   String message = '';
   String path = '';
 
-  /// 获取文档目录文件
-  Future<File> _getLocalDocumentFile() async {
-    String path = PathHelper().getHomePath;
-    setState(() {
-      path = path;
-    });
-    return File('$path/$cookiePathDirName');
-  }
-
   @override
   void initState() {
     super.initState();
-    // NetworkManager().request('/user/getLoginQr/qq').then((value) {
-    //   LoginQr loginQr = LoginQr.fromJson(value.data);
-    //   String code = loginQr.img!.split(',')[1];
-    //   setState(() {
-    //     imgBytes = Base64Decoder().convert(code);
-    //   });
-    // });
     final userApi = UserApi();
     userApi.getLoginQr().then((value) {
       setState(() {
@@ -62,16 +42,15 @@ class _LoginDialogState extends State<LoginDialog> {
         var value = await userApi.checkLoginQr();
         if (value != null) {
           if (value.code == 100) {
-            File file = await _getLocalDocumentFile();
+            timer.cancel();
+            File file = QCookie.getCookieFile();
             QCookie().fromJson(value.result!.toJson());
             file.writeAsStringSync(jsonEncode(value.result));
-            // file.writeAsStringSync(
-            //   Cookie.fromJson(value.result.toJson()).toString(),
-            // );
             setState(() {
               message = value.message;
             });
-            timer.cancel();
+            context.read<UserBloc>().add(UserLoadedEvent());
+            // context.read
             return;
           }
           if (value.refresh != null && (value.refresh as bool) == true) {

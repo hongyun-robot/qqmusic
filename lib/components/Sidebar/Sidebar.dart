@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qqmusic/bloc/user_bloc.dart';
 import 'package:qqmusic/components/sidebar/components/profile.dart';
 import 'package:qqmusic/components/sidebar/components/text_icon.dart';
 import 'package:qqmusic/components/sidebar/components/text_icon2.dart';
@@ -17,6 +19,7 @@ class Sidebar extends StatelessWidget {
         padding: const EdgeInsets.only(right: 11.0),
         child: Column(
           children: [
+            // BlocProvider(create: (context) => UserBloc(), child: Profile()),
             Profile(),
             SizedBox(height: 67),
             Row(

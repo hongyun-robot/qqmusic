@@ -1,3 +1,8 @@
+import 'dart:io' show File;
+
+import 'package:qqmusic/tools/constant.dart' show cookiePathDirName;
+import 'package:qqmusic/tools/path.dart' show PathHelper;
+
 class QCookie {
   static final QCookie _instance = QCookie._internal();
 
@@ -137,6 +142,9 @@ class QCookie {
     musicIgnorePskey = null;
     uin = null;
     psrfQqrefreshToken = null;
+
+    File file = getCookieFile();
+    file.writeAsString('');
   }
 
   static QCookie fromJsonStatic(Map<String, dynamic> json) {
@@ -182,5 +190,11 @@ class QCookie {
   @override
   String toString() {
     return toJson().entries.map((el) => '${el.key}=${el.value}; ').join('; ');
+  }
+
+  /// 获取文档目录文件
+  static File getCookieFile() {
+    String path = PathHelper().getHomePath;
+    return File('$path/$cookiePathDirName');
   }
 }
