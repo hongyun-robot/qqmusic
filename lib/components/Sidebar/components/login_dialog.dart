@@ -5,15 +5,21 @@
 */
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show File;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart'
+    show getApplicationDocumentsDirectory;
 import 'package:qqmusic/api/user/user.dart' show UserApi;
 import 'package:qqmusic/components/z_icon/z_icon.dart';
 import 'package:qqmusic/const/const.dart'
     show DEFAULT_ICON_COLOR, PRIMARY_ICON_COLOR;
+import 'package:qqmusic/model/cookie.dart';
 import 'package:qqmusic/model/login_qr.dart';
 import 'package:qqmusic/net/network_manager.dart';
+import 'package:qqmusic/tools/constant.dart' show cookiePathDirName;
+import 'package:qqmusic/tools/path.dart';
 
 class LoginDialog extends StatefulWidget {
   const LoginDialog({super.key});
@@ -25,6 +31,16 @@ class LoginDialog extends StatefulWidget {
 class _LoginDialogState extends State<LoginDialog> {
   Uint8List? imgBytes;
   String message = '';
+  String path = '';
+
+  /// 获取文档目录文件
+  Future<File> _getLocalDocumentFile() async {
+    String path = PathHelper().getHomePath;
+    setState(() {
+      path = path;
+    });
+    return File('$path/$cookiePathDirName');
+  }
 
   @override
   void initState() {
@@ -45,10 +61,28 @@ class _LoginDialogState extends State<LoginDialog> {
       Timer.periodic(const Duration(seconds: 2), (timer) async {
         var value = await userApi.checkLoginQr();
         if (value != null) {
-          if (value.refresh != null && value.refresh as bool) timer.cancel();
-          setState(() {
-            message = value.message;
-          });
+          if (value.code == 100) {
+            File file = await _getLocalDocumentFile();
+            QCookie().fromJson(value.result!.toJson());
+            file.writeAsStringSync(jsonEncode(value.result));
+            // file.writeAsStringSync(
+            //   Cookie.fromJson(value.result.toJson()).toString(),
+            // );
+            setState(() {
+              message = value.message;
+            });
+            timer.cancel();
+            return;
+          }
+          if (value.refresh != null && (value.refresh as bool) == true) {
+            timer.cancel();
+            return;
+          }
+
+          if (value.result == 502) {
+            timer.cancel();
+            return;
+          }
         }
       });
     });
@@ -117,11 +151,12 @@ class _LoginDialogState extends State<LoginDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(message),
-                Text('密码登录'),
-                SizedBox(width: 40),
-                Text('注册账号'),
-                SizedBox(width: 40),
-                Text('意见反馈'),
+                // Text('密码登录'),
+                // SizedBox(width: 40),
+                // Text('注册账号'),
+                // SizedBox(width: 40),
+                // Text('意见反馈'),
+                Text(path),
               ],
             ),
           ],

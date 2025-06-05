@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:qqmusic/api/user/user.dart';
+import 'package:qqmusic/model/cookie.dart';
 import 'package:qqmusic/routers/routers.dart';
 import 'package:qqmusic/theme/theme.dart' show GlobalThemData;
+import 'package:qqmusic/tools/logger.dart' show Logger;
+import 'package:qqmusic/tools/path.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -20,6 +24,25 @@ void main() async {
     await windowManager.show();
     await windowManager.focus();
   });
+
+  await PathHelper().init();
+
+  UserApi().init();
+
+  FlutterError.onError = (FlutterErrorDetails details) {
+    if (details.library == 'rendering library' ||
+        details.library == 'image resource service') {
+      return;
+    }
+
+    Logger.instance.e(
+      details.summary,
+      error: details.exception,
+      stackTrace: details.stack,
+    );
+    Logger.instance.d(details.stack);
+  };
+
   runApp(MyApp());
 }
 

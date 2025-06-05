@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:qqmusic/model/cookie.dart';
 import 'package:qqmusic/net/method/base_method.dart' show BaseMethod;
+import 'package:qqmusic/net/response/base_response.dart' show BaseResponse;
+import 'package:qqmusic/tools/logger.dart';
 
 import 'interceptor/custom_interceptor.dart';
 
@@ -34,12 +37,13 @@ class NetworkManager {
   }
 
   ///网络请求
-  Future<T> request<T>(
+  Future request(
     String path, {
     BaseMethod method = BaseMethod.get,
     Map<String, dynamic>? params,
     data,
     Options? options,
+    bool isCookie = false,
   }) async {
     const methodValues = {
       BaseMethod.get: 'get',
@@ -49,8 +53,10 @@ class NetworkManager {
       BaseMethod.patch: 'patch',
       BaseMethod.head: 'head',
     };
-
-    options ??= Options(method: methodValues[method]);
+    options ??= Options(
+      method: methodValues[method],
+      headers: {'Cookie': isCookie ? QCookie().toString() : {}},
+    );
     try {
       Response response;
       response = await _dio.request(

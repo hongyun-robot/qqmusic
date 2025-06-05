@@ -1,19 +1,53 @@
-import 'dart:convert' show Base64Decoder;
+import 'dart:convert' show Base64Decoder, jsonDecode;
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:qqmusic/api/request.dart';
 import 'package:qqmusic/model/check_login_qr.dart';
+import 'package:qqmusic/model/cookie.dart';
 import 'package:qqmusic/model/login_qr.dart' show LoginQr;
+import 'package:qqmusic/model/refresh.dart';
 import 'package:qqmusic/net/network_manager.dart' show NetworkManager;
+import 'package:qqmusic/net/response/base_response.dart';
+import 'package:qqmusic/tools/constant.dart' show cookiePathDirName;
+import 'package:qqmusic/tools/path.dart' show PathHelper;
 
 class UserApi extends Request {
+  /// 单例
+  static final UserApi _instance = UserApi._internal();
+  UserApi._internal();
+
+  factory UserApi() {
+    return _instance;
+  }
+
+  void init() async {
+    File file = File('${PathHelper().getHomePath}/$cookiePathDirName');
+    if (file.existsSync()) {
+      String value = await file.readAsString();
+      QCookie().fromJson(jsonDecode(value));
+      id = QCookie().uin;
+      Refresh refreshV = await refresh();
+      if (refreshV.result != 100) {
+        QCookie().clear();
+      } else {
+        QCookie().fromJson({'qqmusic_key': refreshV.data!.musickey});
+      }
+    }
+  }
+
   @override
   final String baseAddr = '/user';
   int? ptqrtoken;
   String? qrsig;
 
+  String? id;
+
   Future<Uint8List> getLoginQr() async {
-    var value = await NetworkManager().request(getUrl('/getLoginQr/qq'));
+    var value = await NetworkManager().request(
+      getUrl('/getLoginQr/qq'),
+      isCookie: true,
+    );
     LoginQr loginQr = LoginQr.fromJson(value.data);
     ptqrtoken = loginQr.ptqrtoken!;
     qrsig = loginQr.qrsig!;
@@ -26,8 +60,15 @@ class UserApi extends Request {
     var value = await NetworkManager().request(
       getUrl('/checkLoginQr/qq?ptqrtoken=$ptqrtoken&qrsig=$qrsig'),
     );
+
     return CheckLoginQr.fromJson(value.data);
   }
 
-  // Fu
+  Future<Refresh> refresh() async {
+    BaseResponse<Refresh> value = await NetworkManager().request(
+      getUrl('/refresh'),
+      isCookie: true,
+    );
+    return value.data;
+  }
 }

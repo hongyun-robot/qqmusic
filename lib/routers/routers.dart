@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qqmusic/components/transition_resolver.dart';
 import 'package:qqmusic/const/const.dart';
 import 'package:qqmusic/pages/like/like_page.dart';
 import 'package:qqmusic/pages/local_download/local_download_page.dart';
@@ -30,50 +31,50 @@ final GoRouter routers = GoRouter(
         GoRoute(
           path: '/${ROUTER_NAME.recommend.name}',
           name: ROUTER_NAME.recommend.name,
-          builder: (BuildContext context, GoRouterState state) {
-            return RecommendPage();
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            return transitionResolver(RecommendPage());
           },
         ),
         GoRoute(
           path: '/${ROUTER_NAME.musichall.name}',
           name: ROUTER_NAME.musichall.name,
-          builder: (context, state) {
-            return MusicHallPage();
+          pageBuilder: (context, state) {
+            return transitionResolver(MusicHallPage());
           },
         ),
         GoRoute(
           path: '/${ROUTER_NAME.like.name}',
           name: ROUTER_NAME.like.name,
-          builder: (context, state) {
-            return LikePage();
+          pageBuilder: (context, state) {
+            return transitionResolver(LikePage());
           },
         ),
         GoRoute(
           path: '/${ROUTER_NAME.recently.name}',
           name: ROUTER_NAME.recently.name,
-          builder: (context, state) {
-            return RecentlyPage();
+          pageBuilder: (context, state) {
+            return transitionResolver(RecentlyPage());
           },
         ),
         GoRoute(
           path: '/${ROUTER_NAME.localdownload.name}',
           name: ROUTER_NAME.localdownload.name,
-          builder: (context, state) {
-            return LocalDownloadPage();
+          pageBuilder: (context, state) {
+            return transitionResolver(LocalDownloadPage());
           },
         ),
         GoRoute(
           path: '/${ROUTER_NAME.purchased.name}',
           name: ROUTER_NAME.purchased.name,
-          builder: (context, state) {
-            return PurchasedPage();
+          pageBuilder: (context, state) {
+            return transitionResolver(PurchasedPage());
           },
         ),
         GoRoute(
           path: '/${ROUTER_NAME.triallistening.name}',
           name: ROUTER_NAME.triallistening.name,
-          builder: (context, state) {
-            return TrialListeningPage();
+          pageBuilder: (context, state) {
+            return transitionResolver(TrialListeningPage());
           },
         ),
       ],
