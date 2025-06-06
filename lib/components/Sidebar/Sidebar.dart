@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qqmusic/bloc/user_bloc.dart';
 import 'package:qqmusic/components/sidebar/components/profile.dart';
+import 'package:qqmusic/components/sidebar/components/song_list.dart';
 import 'package:qqmusic/components/sidebar/components/text_icon.dart';
 import 'package:qqmusic/components/sidebar/components/text_icon2.dart';
 import 'package:qqmusic/const/const.dart';
@@ -103,8 +104,10 @@ class Sidebar extends StatelessWidget {
                     routeHistoryObserver.didPush(state);
                   },
                 ),
+                SizedBox(height: 25),
               ],
             ),
+            SongList(),
           ],
         ),
       ),

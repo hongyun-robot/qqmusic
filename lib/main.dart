@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:qqmusic/api/user/user.dart';
-import 'package:qqmusic/model/cookie.dart';
 import 'package:qqmusic/routers/routers.dart';
 import 'package:qqmusic/theme/theme.dart' show GlobalThemData;
 import 'package:qqmusic/tools/logger.dart' show Logger;

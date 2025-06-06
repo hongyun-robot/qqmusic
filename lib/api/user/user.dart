@@ -3,16 +3,15 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:qqmusic/api/request.dart';
-import 'package:qqmusic/bloc/user_bloc.dart' show UserBloc, UserLoadedEvent;
 import 'package:qqmusic/model/check_login_qr.dart';
+import 'package:qqmusic/model/collect_song_list.dart';
 import 'package:qqmusic/model/cookie.dart';
 import 'package:qqmusic/model/login_qr.dart' show LoginQr;
 import 'package:qqmusic/model/m_detail.dart';
 import 'package:qqmusic/model/refresh.dart';
+import 'package:qqmusic/model/song_list.dart';
 import 'package:qqmusic/net/network_manager.dart' show NetworkManager;
-import 'package:qqmusic/net/response/base_response.dart';
 import 'package:qqmusic/tools/constant.dart' show cookiePathDirName;
-import 'package:qqmusic/tools/logger.dart';
 import 'package:qqmusic/tools/path.dart' show PathHelper;
 
 class UserApi extends Request {
@@ -54,6 +53,7 @@ class UserApi extends Request {
 
   String? id;
 
+  // 获取登录二维码
   Future<Uint8List> getLoginQr() async {
     var value = await NetworkManager().request(
       getUrl('/getLoginQr/qq'),
@@ -66,6 +66,7 @@ class UserApi extends Request {
     return Base64Decoder().convert(code);
   }
 
+  // 检查登录二维码状态
   Future<CheckLoginQr?> checkLoginQr() async {
     if (ptqrtoken == null || qrsig == null) return null;
     var value = await NetworkManager().request(
@@ -75,6 +76,7 @@ class UserApi extends Request {
     return CheckLoginQr.fromJson(value.data);
   }
 
+  // 刷新 cookie
   Future<Refresh> refresh() async {
     final value = await NetworkManager().request(
       getUrl('/refresh'),
@@ -83,6 +85,7 @@ class UserApi extends Request {
     return Refresh.fromJson(value.data);
   }
 
+  // 获取个人信息
   Future<Mdetail> detail() async {
     final value = await NetworkManager().request(
       getUrl('/detail'),
@@ -90,5 +93,23 @@ class UserApi extends Request {
       params: {'id': id},
     );
     return Mdetail.fromJson(value.data);
+  }
+
+  Future<SongList> songList() async {
+    final value = await NetworkManager().request(
+      getUrl('/songlist'),
+      isCookie: true,
+      params: {'id': id},
+    );
+    return SongList.fromJson(value.data);
+  }
+
+  Future<CollectSongList> collectSongList() async {
+    final value = await NetworkManager().request(
+      getUrl('/collect/songlist'),
+      isCookie: true,
+      params: {'id': id, 'pageSize': 100},
+    );
+    return CollectSongList.fromJson(value.data);
   }
 }

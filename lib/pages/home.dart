@@ -13,49 +13,43 @@ class HomePage extends StatelessWidget {
       builder: (context, constraints) {
         return Scaffold(
           backgroundColor: Color.fromRGBO(240, 240, 240, 1.0),
-          body: Container(
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                children: [
-                  SafeArea(child: Sidebar()),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Topbar(),
-                              Expanded(
-                                child: Container(
-                                  color: Color.fromRGBO(246, 246, 246, 1.0),
-                                  child: child,
+          body: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Row(
+              children: [
+                SafeArea(child: Sidebar()),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Topbar(),
+                            Expanded(
+                              child: Container(
+                                color: Color.fromRGBO(246, 246, 246, 1.0),
+                                child: child,
+                              ),
+                            ),
+                            SizedBox(height: 12),
+                            Container(
+                              height: 77,
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(246, 246, 246, 1.0),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(8),
                                 ),
                               ),
-                              SizedBox(height: 12),
-                              Container(
-                                height: 77,
-                                decoration: BoxDecoration(
-                                  color: Color.fromRGBO(246, 246, 246, 1.0),
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(8),
-                                  ),
-                                ),
-                                child: Player(),
-                              ),
-                            ],
-                          ),
+                              child: Player(),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );

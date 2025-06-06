@@ -1051,23 +1051,25 @@ class MedalBykey {
 }
 
 class UserInfoUi {
-  Nickname? nickname;
-  List<Iconlist>? iconlist;
+  late Nickname nickname;
+  late List<Iconlist> iconlist;
 
-  UserInfoUi({this.nickname, this.iconlist});
+  UserInfoUi({required this.nickname, required this.iconlist});
 
   UserInfoUi.fromJson(Map<String, dynamic> json) {
     if (json["nickname"] is Map) {
       nickname =
-          json["nickname"] == null ? null : Nickname.fromJson(json["nickname"]);
+          (json["nickname"] == null
+              ? null
+              : Nickname.fromJson(json["nickname"]))!;
     }
     if (json["iconlist"] is List) {
       iconlist =
-          json["iconlist"] == null
+          (json["iconlist"] == null
               ? null
               : (json["iconlist"] as List)
                   .map((e) => Iconlist.fromJson(e))
-                  .toList();
+                  .toList())!;
     }
   }
 
@@ -1088,20 +1090,20 @@ class UserInfoUi {
 }
 
 class Iconlist {
-  int? width;
-  int? height;
-  String? srcUrl;
-  String? style;
-  String? ext;
-  String? desc;
+  late int width;
+  late int height;
+  late String srcUrl;
+  late String style;
+  late String ext;
+  late String desc;
 
   Iconlist({
-    this.width,
-    this.height,
-    this.srcUrl,
-    this.style,
-    this.ext,
-    this.desc,
+    required this.width,
+    required this.height,
+    required this.srcUrl,
+    required this.style,
+    required this.ext,
+    required this.desc,
   });
 
   Iconlist.fromJson(Map<String, dynamic> json) {
