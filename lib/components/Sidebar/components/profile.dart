@@ -18,10 +18,12 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  late final UserBloc _userBloc;
   @override
   void initState() {
     super.initState();
-    context.read<UserBloc>().add(UserLoadedEvent());
+    _userBloc = context.read<UserBloc>();
+    _userBloc.add(UserLoadedEvent());
   }
 
   @override
@@ -87,7 +89,11 @@ class _ProfileState extends State<Profile> {
                     showDialog(
                       barrierColor: Colors.transparent,
                       context: context,
-                      builder: (context) => LoginDialog(),
+                      builder:
+                          (context) => BlocProvider.value(
+                            value: _userBloc,
+                            child: LoginDialog(),
+                          ),
                       // (BuildContext context) => MultiBlocProvider(
                       //   providers: [BlocProvider(create: (context) => UserBloc())],
                       //   child: LoginDialog(),

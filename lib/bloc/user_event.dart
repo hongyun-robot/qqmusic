@@ -4,3 +4,8 @@ part of 'user_bloc.dart';
 sealed class UserEvent {}
 
 class UserLoadedEvent extends UserEvent {}
+
+class UserLoginStateEvent extends UserEvent {
+  final bool isLogin;
+  UserLoginStateEvent(this.isLogin);
+}

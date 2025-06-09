@@ -12,6 +12,7 @@ import 'package:qqmusic/model/refresh.dart';
 import 'package:qqmusic/model/song_list.dart';
 import 'package:qqmusic/net/network_manager.dart' show NetworkManager;
 import 'package:qqmusic/tools/constant.dart' show cookiePathDirName;
+import 'package:qqmusic/tools/logger.dart';
 import 'package:qqmusic/tools/path.dart' show PathHelper;
 
 class UserApi extends Request {
@@ -27,8 +28,12 @@ class UserApi extends Request {
     File file = File('${PathHelper().getHomePath}/$cookiePathDirName');
     if (file.existsSync()) {
       String value = await file.readAsString();
-      QCookie().fromJson(jsonDecode(value));
-      id = QCookie().uin;
+      try {
+        QCookie().fromJson(jsonDecode(value));
+        id = QCookie().uin;
+      } catch (e) {
+        Logger.instance.d(e);
+      }
       // Refresh refreshV = await refresh();
       // Logger.instance.d('refresh.result: ${refreshV.result}');
       // if (refreshV.result != 100) {

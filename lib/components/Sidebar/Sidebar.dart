@@ -107,7 +107,20 @@ class Sidebar extends StatelessWidget {
                 SizedBox(height: 25),
               ],
             ),
-            SongList(),
+            BlocSelector<UserBloc, UserState, bool>(
+              selector: (state) {
+                if (state is UserLoginState) {
+                  return state.isLogin;
+                }
+                return false;
+              },
+              builder: (context, isLogin) {
+                if (isLogin) {
+                  return SongList();
+                }
+                return SizedBox();
+              },
+            ),
           ],
         ),
       ),

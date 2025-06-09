@@ -4,7 +4,9 @@
  * song_list.dart
 */
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qqmusic/api/user/user.dart';
+import 'package:qqmusic/bloc/user_bloc.dart' show UserBloc;
 import 'package:qqmusic/model/collect_song_list.dart' as CollectSongList;
 import 'package:qqmusic/model/song_list.dart' as SongList2;
 import 'package:qqmusic/components/sidebar/components/image_icon.dart'
