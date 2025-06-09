@@ -14,7 +14,8 @@ enum ROUTER_NAME {
   recently(name: 'recently', explain: '最近播放'),
   localdownload(name: 'LocalDownload', explain: '本地和下载'),
   purchased(name: 'purchased', explain: '已购音乐'),
-  triallistening(name: 'TrialListening', explain: '试听列表');
+  triallistening(name: 'TrialListening', explain: '试听列表'),
+  personalhomepage(name: 'PersonalHomepage', explain: '个人主页');
 
   const ROUTER_NAME({required this.name, required this.explain});
   final String name;

@@ -38,7 +38,11 @@ class _SongListState extends State<SongList> {
     super.initState();
     UserApi().songList().then((v) {
       if (v.result == 100) {
-        songList = v.data?.mlist.sublist(3);
+        const excludeNames = {'QZone背景音乐', '我喜欢', '本地上传'};
+        songList =
+            v.data?.mlist
+                .where((v) => !excludeNames.contains(v.dissName))
+                .toList();
         setState(() {
           listViewWidget = ListView.builder(
             itemCount: songList?.length ?? 0,

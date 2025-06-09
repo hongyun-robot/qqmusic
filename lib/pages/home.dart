@@ -14,7 +14,12 @@ class HomePage extends StatelessWidget {
         return Scaffold(
           backgroundColor: Color.fromRGBO(240, 240, 240, 1.0),
           body: Padding(
-            padding: const EdgeInsets.all(18.0),
+            padding: const EdgeInsets.only(
+              left: 18,
+              right: 18,
+              bottom: 18,
+              top: 10,
+            ),
             child: Row(
               children: [
                 SafeArea(child: Sidebar()),
@@ -28,7 +33,13 @@ class HomePage extends StatelessWidget {
                             Topbar(),
                             Expanded(
                               child: Container(
-                                color: Color.fromRGBO(246, 246, 246, 1.0),
+                                clipBehavior: Clip.hardEdge,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.circular(8),
+                                    bottomRight: Radius.circular(8),
+                                  ),
+                                ),
                                 child: child,
                               ),
                             ),

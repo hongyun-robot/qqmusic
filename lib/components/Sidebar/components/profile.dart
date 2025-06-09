@@ -5,10 +5,14 @@
 */
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart' show GoRouter;
 import 'package:qqmusic/bloc/user_bloc.dart';
 import 'package:qqmusic/components/sidebar/components/login_dialog.dart';
 import 'package:qqmusic/components/z_icon/z_icon.dart';
+import 'package:qqmusic/const/const.dart' show ROUTER_NAME;
 import 'package:qqmusic/const/icon-style.dart' show ICON_STYLE;
+import 'package:qqmusic/routers/navigator_observer.dart'
+    show routeHistoryObserver;
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -42,16 +46,25 @@ class _ProfileState extends State<Profile> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100.0),
-                        ),
-                        child: Image.network(
-                          state.userInfo.data!.creator.headpic,
-                          width: 22,
-                          height: 22,
-                          // fit: BoxFit.cover,
+                      GestureDetector(
+                        onTap: () {
+                          GoRouter.of(
+                            context,
+                          ).pushNamed(ROUTER_NAME.personalhomepage.name);
+                          var state = GoRouter.of(context).state;
+                          routeHistoryObserver.didPush(state);
+                        },
+                        child: Container(
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100.0),
+                          ),
+                          child: Image.network(
+                            state.userInfo.data!.creator.headpic,
+                            width: 22,
+                            height: 22,
+                            // fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                       SizedBox(width: 8),
@@ -94,10 +107,6 @@ class _ProfileState extends State<Profile> {
                             value: _userBloc,
                             child: LoginDialog(),
                           ),
-                      // (BuildContext context) => MultiBlocProvider(
-                      //   providers: [BlocProvider(create: (context) => UserBloc())],
-                      //   child: LoginDialog(),
-                      // ),
                     );
                   },
                   child: Row(

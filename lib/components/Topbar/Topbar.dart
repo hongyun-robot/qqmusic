@@ -23,7 +23,10 @@ class Topbar extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(42, 10, 23, 10),
       decoration: BoxDecoration(
         color: Color.fromRGBO(246, 246, 246, 1.0),
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(8),
+          topRight: Radius.circular(8),
+        ),
       ),
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
