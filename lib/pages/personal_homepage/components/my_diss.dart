@@ -12,23 +12,41 @@ class MyDiss extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late final crossAxisCount;
+    final double crossAxisSpacing = 10;
+    final double childAspectRatio = 0.75;
+    final double mainAxisSpacing = 0;
+    final itemCount = 12;
+    late final rowCount;
+
+    final width = MediaQuery.of(context).size.width - 220 - 80 - 36;
+    if (width >= 887 && width < 1069) {
+      crossAxisCount = 5;
+    } else if (width >= 1069) {
+      crossAxisCount = 6;
+    } else {
+      crossAxisCount = 4;
+    }
+    rowCount = (itemCount / crossAxisCount).ceil();
+    final itemWidth =
+        (width - (crossAxisCount - 1) * crossAxisSpacing) / crossAxisCount;
+    final itemHeight = itemWidth / childAspectRatio;
+    final totalHeight =
+        itemHeight * rowCount + mainAxisSpacing * (rowCount - 1);
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
-        print('Current state type: ${state.runtimeType}');
         if (state is UserLoaded) {
           var mydiss = state.userInfo.data!.mydiss;
-          int num = mydiss.num;
-          int column = (num / 4).ceil();
           return SizedBox(
-            height: 260 * column + 15 * (column - 1),
+            height: totalHeight,
             child: GridView(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                mainAxisSpacing: 15,
-                crossAxisSpacing: 10,
-                childAspectRatio: 0.85,
+                crossAxisCount: crossAxisCount,
+                mainAxisSpacing: mainAxisSpacing,
+                crossAxisSpacing: crossAxisSpacing,
+                childAspectRatio: childAspectRatio,
               ),
               children:
                   mydiss.mlist
@@ -45,8 +63,8 @@ class MyDiss extends StatelessWidget {
                                 ),
                                 child: Image.network(
                                   i.picurl,
-                                  height: 210,
-                                  fit: BoxFit.fitHeight,
+                                  width: itemWidth,
+                                  fit: BoxFit.fitWidth,
                                 ),
                               ),
                             ),
