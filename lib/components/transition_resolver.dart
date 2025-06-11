@@ -8,6 +8,7 @@ Page<dynamic> transitionResolver(Widget child, {bool useTransition = true}) {
       child: child,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeThroughTransition(
+          fillColor: Colors.transparent,
           animation: animation,
           secondaryAnimation: secondaryAnimation,
           child: child,

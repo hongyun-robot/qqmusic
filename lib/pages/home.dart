@@ -23,24 +23,36 @@ class HomePage extends StatelessWidget {
             child: Row(
               children: [
                 SafeArea(child: Sidebar()),
-                Expanded(
+                Flexible(
                   child: Column(
                     children: [
-                      Expanded(
+                      Flexible(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Topbar(),
                             Expanded(
-                              child: Container(
-                                clipBehavior: Clip.hardEdge,
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.only(
-                                    bottomLeft: Radius.circular(8),
-                                    bottomRight: Radius.circular(8),
+                              child: SingleChildScrollView(
+                                child: Container(
+                                  constraints: constraints.copyWith(
+                                    minHeight: 0,
+                                    maxHeight: double.infinity,
                                   ),
+                                  clipBehavior: Clip.hardEdge,
+                                  padding: const EdgeInsets.only(
+                                    left: 40,
+                                    right: 40,
+                                    top: 23,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Color.fromRGBO(246, 246, 246, 1.0),
+                                    borderRadius: const BorderRadius.only(
+                                      bottomLeft: Radius.circular(8),
+                                      bottomRight: Radius.circular(8),
+                                    ),
+                                  ),
+                                  child: IntrinsicHeight(child: child),
                                 ),
-                                child: child,
                               ),
                             ),
                             SizedBox(height: 12),

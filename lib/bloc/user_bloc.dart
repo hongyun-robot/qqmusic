@@ -17,8 +17,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final user = await UserApi().detail();
       if (user.result == 100) {
         Logger.instance.i('user info 获取成功');
-        emit(UserLoaded(user));
         emit(UserLoginState(isLogin: true));
+        emit(UserLoaded(user));
       } else {
         Logger.instance.d(user.errMsg);
         emit(UserLoginState(isLogin: false));

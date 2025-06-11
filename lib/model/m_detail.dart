@@ -281,13 +281,19 @@ class Video {
 }
 
 class Mydiss {
-  int? num;
-  String? title;
-  String? laypic;
-  String? jumpurl;
-  List<Mlist>? mlist;
+  late int num;
+  late String title;
+  late String laypic;
+  late String jumpurl;
+  late List<Mlist> mlist;
 
-  Mydiss({this.num, this.title, this.laypic, this.jumpurl, this.mlist});
+  Mydiss({
+    required this.num,
+    required this.title,
+    required this.laypic,
+    required this.jumpurl,
+    required this.mlist,
+  });
 
   Mydiss.fromJson(Map<String, dynamic> json) {
     if (json["num"] is int) {
@@ -304,9 +310,11 @@ class Mydiss {
     }
     if (json["mlist"] is List) {
       mlist =
-          json["mlist"] == null
+          (json["mlist"] == null
               ? null
-              : (json["mlist"] as List).map((e) => Mlist.fromJson(e)).toList();
+              : (json["mlist"] as List)
+                  .map((e) => Mlist.fromJson(e))
+                  .toList())!;
     }
   }
 
@@ -328,26 +336,26 @@ class Mydiss {
 }
 
 class Mlist {
-  int? dissid;
-  int? dirid;
-  String? picurl;
-  String? title;
-  String? subtitle;
-  int? icontype;
-  String? iconurl;
-  int? isshow;
-  int? dirShow;
+  late int dissid;
+  late int dirid;
+  late String picurl;
+  late String title;
+  late String subtitle;
+  late int icontype;
+  late String iconurl;
+  late int isshow;
+  late int dirShow;
 
   Mlist({
-    this.dissid,
-    this.dirid,
-    this.picurl,
-    this.title,
-    this.subtitle,
-    this.icontype,
-    this.iconurl,
-    this.isshow,
-    this.dirShow,
+    required this.dissid,
+    required this.dirid,
+    required this.picurl,
+    required this.title,
+    required this.subtitle,
+    required this.icontype,
+    required this.iconurl,
+    required this.isshow,
+    required this.dirShow,
   });
 
   Mlist.fromJson(Map<String, dynamic> json) {
