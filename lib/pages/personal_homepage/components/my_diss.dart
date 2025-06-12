@@ -165,7 +165,7 @@ class _MyDissState extends State<MyDiss> {
                                                 color: ICON_STYLE.defaultColor,
                                                 hoverColor:
                                                     ICON_STYLE.hoverColor,
-                                                size: 16,
+                                                size: 20,
                                               ),
                                             )
                                             : SizedBox(),

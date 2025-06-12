@@ -20,7 +20,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserLoginState(isLogin: true));
         emit(UserLoaded(user));
       } else {
-        Logger.instance.d(user.errMsg);
+        Logger.instance.e(user.errMsg);
         emit(UserLoginState(isLogin: false));
       }
     });
