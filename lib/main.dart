@@ -155,16 +155,16 @@ class MyApp extends StatefulWidget {
             GoRoute(
               path: '/${ROUTER_NAME.personalhomepage.name}',
               name: ROUTER_NAME.personalhomepage.name,
-              pageBuilder:
-                  (context, state) => transitionResolver(
-                    MultiBlocProvider(
-                      providers: [BlocProvider.value(value: userBloc)],
-                      child: PersonalHomepage(),
-                    ),
-                  ),
-              // pageBuilder: (context, state) {
-              //   return transitionResolver(PersonalHomepage());
-              // },
+              // pageBuilder:
+              //     (context, state) => transitionResolver(
+              //       MultiBlocProvider(
+              //         providers: [BlocProvider.value(value: userBloc)],
+              //         child: PersonalHomepage(),
+              //       ),
+              //     ),
+              pageBuilder: (context, state) {
+                return transitionResolver(PersonalHomepage());
+              },
             ),
           ],
         ),

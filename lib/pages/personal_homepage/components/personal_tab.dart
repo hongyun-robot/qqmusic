@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder;
 import 'package:qqmusic/bloc/user_bloc.dart'
     show UserBloc, UserLoaded, UserState;
-import 'package:qqmusic/const/const.dart' show PRIMARY_ICON_COLOR;
+import 'package:qqmusic/components/z_text/z_text.dart';
+import 'package:qqmusic/const/icon-style.dart';
 import 'package:qqmusic/pages/personal_homepage/components/my_diss.dart';
 import 'package:qqmusic/pages/personal_homepage/components/my_music.dart';
 import 'package:qqmusic/pages/personal_homepage/components/my_radio.dart';
@@ -20,10 +21,7 @@ class PersonalTab extends StatefulWidget {
 }
 
 class _PersonalTabState extends State<PersonalTab> {
-  int active = 2;
-  Color color1 = Colors.black;
-  Color color2 = Colors.black;
-  Color color3 = Colors.black;
+  int active = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -33,102 +31,51 @@ class _PersonalTabState extends State<PersonalTab> {
           Row(
             spacing: 54,
             children: [
-              GestureDetector(
+              ZText(
+                text: '我喜欢',
+                hoverColor: ICON_STYLE.hoverColor,
+                color: active == 1 ? ICON_STYLE.hoverColor : Colors.black,
                 onTap: () {
                   setState(() {
                     active = 1;
                   });
                 },
-                child: MouseRegion(
-                  onEnter: (event) {
-                    setState(() {
-                      color1 = PRIMARY_ICON_COLOR;
-                    });
-                  },
-                  onExit: (event) {
-                    setState(() {
-                      color1 = Colors.black;
-                    });
-                  },
-                  cursor: SystemMouseCursors.click,
-                  child: Text(
-                    '我喜欢',
-                    style: TextStyle(
-                      color: active == 1 ? PRIMARY_ICON_COLOR : color1,
-                    ),
-                  ),
-                ),
               ),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    active = 2;
-                  });
-                },
-                child: MouseRegion(
-                  onEnter: (event) {
-                    setState(() {
-                      color2 = PRIMARY_ICON_COLOR;
-                    });
-                  },
-                  onExit: (event) {
-                    setState(() {
-                      color2 = Colors.black;
-                    });
-                  },
-                  cursor: SystemMouseCursors.click,
-                  child: BlocBuilder<UserBloc, UserState>(
-                    builder: (context, state) {
-                      if (state is UserLoaded) {
-                        return Text(
-                          '创建的歌单${state.userInfo.data!.mydiss.num}',
-                          style: TextStyle(
-                            color: active == 2 ? PRIMARY_ICON_COLOR : color2,
-                          ),
-                        );
-                      }
-                      return Text(
-                        '创建的歌单',
-                        style: TextStyle(
-                          color: active == 2 ? PRIMARY_ICON_COLOR : color2,
-                        ),
-                      );
+              BlocBuilder<UserBloc, UserState>(
+                builder: (context, state) {
+                  int num = 0;
+                  if (state is UserLoaded) {
+                    num = state.userInfo.data!.mydiss.num;
+                  }
+                  return ZText(
+                    text: '创建的歌单$num',
+                    hoverColor: ICON_STYLE.hoverColor,
+                    color: active == 2 ? ICON_STYLE.hoverColor : Colors.black,
+                    onTap: () {
+                      setState(() {
+                        active = 2;
+                      });
                     },
-                  ),
-                ),
+                  );
+                },
               ),
-              GestureDetector(
+              ZText(
+                text: '上传的视频',
+                hoverColor: ICON_STYLE.hoverColor,
+                color: active == 3 ? ICON_STYLE.hoverColor : Colors.black,
                 onTap: () {
                   setState(() {
                     active = 3;
                   });
                 },
-                child: MouseRegion(
-                  onEnter: (event) {
-                    setState(() {
-                      color3 = PRIMARY_ICON_COLOR;
-                    });
-                  },
-                  onExit: (event) {
-                    setState(() {
-                      color3 = Colors.black;
-                    });
-                  },
-                  cursor: SystemMouseCursors.click,
-                  child: Text(
-                    '上传的视频',
-                    style: TextStyle(
-                      color: active == 3 ? PRIMARY_ICON_COLOR : color3,
-                    ),
-                  ),
-                ),
               ),
             ],
           ),
-          SizedBox(height: 40),
           if (active == 1) ...[
+            SizedBox(height: 30),
             MyMusic(),
           ] else if (active == 2) ...[
+            SizedBox(height: 40),
             MyDiss(),
           ] else ...[
             MyRadio(),

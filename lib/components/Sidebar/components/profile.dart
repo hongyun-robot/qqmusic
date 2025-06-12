@@ -28,6 +28,7 @@ class _ProfileState extends State<Profile> {
     super.initState();
     _userBloc = context.read<UserBloc>();
     _userBloc.add(UserLoadedEvent());
+    // context.read<UserBloc>().add(UserLoadedEvent());
   }
 
   @override
@@ -104,6 +105,7 @@ class _ProfileState extends State<Profile> {
                       context: context,
                       builder:
                           (context) => BlocProvider.value(
+                            // value: context.read<UserBloc>(),
                             value: _userBloc,
                             child: LoginDialog(),
                           ),

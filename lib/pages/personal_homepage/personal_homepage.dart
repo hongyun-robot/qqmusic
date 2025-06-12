@@ -8,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder;
 import 'package:provider/provider.dart';
 import 'package:qqmusic/bloc/user_bloc.dart'
     show UserBloc, UserLoaded, UserLoadedEvent, UserState;
+import 'package:qqmusic/components/z_text/z_text.dart';
+import 'package:qqmusic/const/icon-style.dart';
 import 'package:qqmusic/pages/personal_homepage/components/personal_tab.dart'
     show PersonalTab;
 
@@ -22,7 +24,7 @@ class _PersonalHomepageState extends State<PersonalHomepage> {
   @override
   void initState() {
     super.initState();
-    context.read<UserBloc>().add(UserLoadedEvent());
+    // context.read<UserBloc>().add(UserLoadedEvent());
   }
 
   @override
@@ -87,12 +89,18 @@ class _PersonalHomepageState extends State<PersonalHomepage> {
                       SizedBox(height: 25),
                       Row(
                         children: [
-                          SelectableText(
-                            '粉丝：${state.userInfo.data!.creator.nums.fansnum}',
+                          Text('粉丝：'),
+                          ZText(
+                            text:
+                                '${state.userInfo.data!.creator.nums.fansnum}',
+                            hoverColor: ICON_STYLE.hoverColor,
                           ),
                           SizedBox(width: 18),
-                          SelectableText(
-                            '关注：${state.userInfo.data!.creator.nums.follownum}',
+                          Text('关注：'),
+                          ZText(
+                            text:
+                                '${state.userInfo.data!.creator.nums.follownum}',
+                            hoverColor: ICON_STYLE.hoverColor,
                           ),
                         ],
                       ),

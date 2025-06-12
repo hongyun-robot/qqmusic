@@ -1,3 +1,5 @@
+import 'package:qqmusic/model/m_list_base.dart';
+
 class Mdetail {
   int? code;
   int? subcode;
@@ -335,7 +337,7 @@ class Mydiss {
   }
 }
 
-class Mlist {
+class Mlist extends MListBase {
   late int dissid;
   late int dirid;
   late String picurl;
@@ -392,6 +394,7 @@ class Mlist {
     return list.map(Mlist.fromJson).toList();
   }
 
+  @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["dissid"] = dissid;
