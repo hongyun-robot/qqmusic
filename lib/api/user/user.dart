@@ -3,11 +3,13 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:qqmusic/api/request.dart';
+import 'package:qqmusic/model/album_list.dart';
 import 'package:qqmusic/model/check_login_qr.dart';
 import 'package:qqmusic/model/collect_song_list.dart';
 import 'package:qqmusic/model/cookie.dart';
 import 'package:qqmusic/model/login_qr.dart' show LoginQr;
 import 'package:qqmusic/model/m_detail.dart';
+import 'package:qqmusic/model/mv_list.dart';
 import 'package:qqmusic/model/refresh.dart';
 import 'package:qqmusic/model/song_list.dart';
 import 'package:qqmusic/net/network_manager.dart' show NetworkManager;
@@ -116,5 +118,23 @@ class UserApi extends Request {
       params: {'id': id, 'pageSize': 100},
     );
     return CollectSongList.fromJson(value.data);
+  }
+
+  Future<AlbumList> collectAlbum() async {
+    final value = await NetworkManager().request(
+      getUrl('/collect/album'),
+      isCookie: true,
+      params: {'id': id, 'pageSize': 100},
+    );
+    return AlbumList.fromJson(value.data);
+  }
+
+  Future<MvList> collectMv() async {
+    final value = await NetworkManager().request(
+      getUrl('/collect/mv'),
+      isCookie: true,
+      params: {'id': id, 'pageSize': 100},
+    );
+    return MvList.fromJson(value.data);
   }
 }
