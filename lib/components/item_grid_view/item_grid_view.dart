@@ -17,6 +17,8 @@ class ItemGridView<T> extends StatefulWidget {
     required this.titleKey,
     this.subTileKey,
     this.childAspectRatio = 0.7,
+    this.imageAspectRatio = 1,
+    this.minCrossAxisCount = 4,
   });
   final List<T> data;
   final String idKey;
@@ -24,6 +26,8 @@ class ItemGridView<T> extends StatefulWidget {
   final String titleKey;
   final String? subTileKey;
   final double childAspectRatio;
+  final double imageAspectRatio;
+  final int minCrossAxisCount;
 
   @override
   State<ItemGridView> createState() => _ItemGridViewState<T>();
@@ -37,21 +41,18 @@ class _ItemGridViewState<T> extends State<ItemGridView> {
 
   @override
   Widget build(BuildContext context) {
-    late final int crossAxisCount;
+    late int crossAxisCount;
     final double crossAxisSpacing = 20;
     final double childAspectRatio = widget.childAspectRatio;
     final double mainAxisSpacing = 0;
     final itemCount = widget.data.length;
+    late final double imageHeight;
     late final int rowCount;
 
     final width = MediaQuery.of(context).size.width - 220 - 80 - 36;
-    if (width >= 887 && width < 1069) {
-      crossAxisCount = 5;
-    } else if (width >= 1069) {
-      crossAxisCount = 6;
-    } else {
-      crossAxisCount = 4;
-    }
+    crossAxisCount = widget.minCrossAxisCount + (((width - 585) / 195).floor());
+    crossAxisCount = crossAxisCount >= 7 ? 7 : crossAxisCount;
+
     rowCount = (itemCount / crossAxisCount).ceil();
     final itemWidth =
         (width - (crossAxisCount - 1) * crossAxisSpacing) / crossAxisCount;
@@ -59,6 +60,8 @@ class _ItemGridViewState<T> extends State<ItemGridView> {
         childAspectRatio < 1
             ? itemWidth / childAspectRatio
             : itemWidth * childAspectRatio;
+
+    imageHeight = itemWidth * widget.imageAspectRatio;
     final totalHeight =
         itemHeight * rowCount + mainAxisSpacing * (rowCount - 1);
     return SizedBox(
@@ -103,10 +106,7 @@ class _ItemGridViewState<T> extends State<ItemGridView> {
                           },
                           child: AnimatedContainer(
                             width: itemWidth,
-                            height:
-                                childAspectRatio > 1
-                                    ? itemWidth / childAspectRatio
-                                    : itemWidth,
+                            height: imageHeight,
                             // transform: translationValues,
                             transform:
                                 current == i.getField<int>(widget.idKey)
@@ -122,10 +122,7 @@ class _ItemGridViewState<T> extends State<ItemGridView> {
                                 Image.network(
                                   i.getField<String>(widget.imgKey),
                                   width: itemWidth,
-                                  height:
-                                      childAspectRatio > 1
-                                          ? itemWidth / childAspectRatio
-                                          : itemWidth,
+                                  height: imageHeight,
                                   fit: BoxFit.fill,
                                 ),
                                 AnimatedContainer(
@@ -134,16 +131,13 @@ class _ItemGridViewState<T> extends State<ItemGridView> {
                                       current == i.getField<int>(widget.idKey)
                                           ? maskColor
                                           : Colors.transparent,
-                                  height:
-                                      childAspectRatio > 1
-                                          ? itemWidth / childAspectRatio
-                                          : itemWidth,
+                                  height: imageHeight,
                                 ),
                               ],
                             ),
                           ),
                         ),
-                        SizedBox(height: 10),
+                        SizedBox(height: 5),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,6 +151,7 @@ class _ItemGridViewState<T> extends State<ItemGridView> {
                                     text: i.getField<String>(widget.titleKey),
                                     hoverColor: ICON_STYLE.hoverColor,
                                     softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                   SizedBox(height: 3),
                                   widget.subTileKey != null

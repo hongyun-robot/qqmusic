@@ -15,6 +15,7 @@ class ZText extends StatefulWidget {
     this.softWrap,
     this.size,
     this.disabled,
+    this.overflow,
     super.key,
   });
 
@@ -26,6 +27,7 @@ class ZText extends StatefulWidget {
   final bool? softWrap;
   final double? size;
   final bool? disabled;
+  final TextOverflow? overflow;
 
   @override
   State<ZText> createState() => _ZTextState();
@@ -80,6 +82,7 @@ class _ZTextState extends State<ZText> with SingleTickerProviderStateMixin {
             return Text(
               widget.text,
               softWrap: widget.softWrap,
+              overflow: widget.overflow,
               style: TextStyle(
                 color: _colorAnimation.value,
                 fontSize: widget.size,

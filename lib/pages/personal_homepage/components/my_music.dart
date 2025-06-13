@@ -133,7 +133,9 @@ class _MyMusicState extends State<MyMusic> {
           imgKey: tabConfig[active - 1].imgKey,
           titleKey: tabConfig[active - 1].titleKey,
           subTileKey: tabConfig[active - 1].subTileKey,
-          childAspectRatio: active == 4 ? 1.7 : 0.7,
+          minCrossAxisCount: active == 4 ? 3 : 4,
+          childAspectRatio: active == 4 ? 1.2 : 0.7,
+          imageAspectRatio: active == 4 ? 0.55 : 1,
         ),
       ],
     );
