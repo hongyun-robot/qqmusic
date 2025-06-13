@@ -8,6 +8,7 @@ import 'package:qqmusic/api/user/user.dart' show UserApi;
 import 'package:qqmusic/components/item_grid_view/item_grid_view.dart';
 import 'package:qqmusic/components/z_text/z_text.dart';
 import 'package:qqmusic/const/icon-style.dart' show ICON_STYLE;
+import 'package:qqmusic/model/collect_song_list.dart' show Mlist;
 import 'package:qqmusic/model/m_list_base.dart' show MListBase;
 import 'package:qqmusic/pages/personal_homepage/components/model/tab_config.dart';
 

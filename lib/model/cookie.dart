@@ -1,6 +1,8 @@
+import 'dart:convert' show jsonDecode;
 import 'dart:io' show File;
 
 import 'package:qqmusic/tools/constant.dart' show cookiePathDirName;
+import 'package:qqmusic/tools/logger.dart' show Logger;
 import 'package:qqmusic/tools/path.dart' show PathHelper;
 
 class QCookie {
@@ -11,6 +13,18 @@ class QCookie {
   }
 
   QCookie._internal();
+
+  init() async {
+    File file = File('${PathHelper().getHomePath}/$cookiePathDirName');
+    if (file.existsSync()) {
+      String value = await file.readAsString();
+      try {
+        _instance.fromJson(jsonDecode(value));
+      } catch (e) {
+        Logger.instance.d(e);
+      }
+    }
+  }
 
   String? pt2Gguin;
   String? superuin;

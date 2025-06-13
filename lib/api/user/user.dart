@@ -26,31 +26,8 @@ class UserApi extends Request {
     return _instance;
   }
 
-  init() async {
-    File file = File('${PathHelper().getHomePath}/$cookiePathDirName');
-    if (file.existsSync()) {
-      String value = await file.readAsString();
-      try {
-        QCookie().fromJson(jsonDecode(value));
-        id = QCookie().uin;
-      } catch (e) {
-        Logger.instance.d(e);
-      }
-      // Refresh refreshV = await refresh();
-      // Logger.instance.d('refresh.result: ${refreshV.result}');
-      // if (refreshV.result != 100) {
-      //   QCookie().clear();
-      // } else {
-      // QCookie().fromJson({'qqmusic_key': refreshV.data!.musickey});
-      // QCookie.getCookieFile().writeAsString(QCookie().toString());
-      // final userBloc = UserBloc();
-      // userBloc.add(UserLoadedEvent());
-      // userBloc.stream.listen((state) {
-      //   // print('current state: ${state}');
-      //   Logger.instance.d('current state ${state.toString()}');
-      // });
-      // }
-    }
+  init() {
+    id = QCookie().uin;
   }
 
   @override

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart'
     show GoRoute, GoRouter, GoRouterState, RouteBase, ShellRoute;
+import 'package:qqmusic/api/user/song_list.dart';
 import 'package:qqmusic/api/user/user.dart';
 import 'package:qqmusic/bloc/user_bloc.dart' show UserBloc;
 import 'package:qqmusic/components/transition_resolver.dart'
     show transitionResolver;
 import 'package:qqmusic/const/const.dart' show ROUTER_NAME;
+import 'package:qqmusic/model/cookie.dart';
 import 'package:qqmusic/pages/home.dart' show HomePage;
 import 'package:qqmusic/pages/like/like_page.dart' show LikePage;
 import 'package:qqmusic/pages/local_download/local_download_page.dart'
@@ -51,8 +53,10 @@ void main() async {
   });
 
   await PathHelper().init();
+  await QCookie().init();
 
-  await UserApi().init();
+  UserApi().init();
+  SongListApi().init();
 
   FlutterError.onError = (FlutterErrorDetails details) {
     if (details.library == 'rendering library' ||
