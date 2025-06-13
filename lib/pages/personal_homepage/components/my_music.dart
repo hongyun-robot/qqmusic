@@ -44,6 +44,7 @@ class _MyMusicState extends State<MyMusic> {
         'titleKey': '',
         'subTileKey': '',
         'onTab': (TabConfig i) async {},
+        'onIconTap': (MListBase i) {},
       }),
       TabConfig.fromJson({
         'id': 2,
@@ -62,6 +63,7 @@ class _MyMusicState extends State<MyMusic> {
             listData = [];
           }
         },
+        'onIconTap': (MListBase i) {},
       }),
       TabConfig.fromJson({
         'id': 3,
@@ -80,6 +82,7 @@ class _MyMusicState extends State<MyMusic> {
             listData = [];
           }
         },
+        'onIconTap': (MListBase i) {},
       }),
       TabConfig.fromJson({
         'id': 4,
@@ -98,6 +101,7 @@ class _MyMusicState extends State<MyMusic> {
             listData = [];
           }
         },
+        'onIconTap': (MListBase i) {},
       }),
     ];
   }
@@ -127,16 +131,19 @@ class _MyMusicState extends State<MyMusic> {
                   .toList(),
         ),
         SizedBox(height: 30),
-        ItemGridView<MListBase>(
-          data: listData,
-          idKey: tabConfig[active - 1].idKey,
-          imgKey: tabConfig[active - 1].imgKey,
-          titleKey: tabConfig[active - 1].titleKey,
-          subTileKey: tabConfig[active - 1].subTileKey,
-          minCrossAxisCount: active == 4 ? 3 : 4,
-          childAspectRatio: active == 4 ? 1.2 : 0.7,
-          imageAspectRatio: active == 4 ? 0.55 : 1,
-        ),
+        active != 1
+            ? ItemGridView<MListBase>(
+              data: listData,
+              idKey: tabConfig[active - 1].idKey,
+              imgKey: tabConfig[active - 1].imgKey,
+              titleKey: tabConfig[active - 1].titleKey,
+              subTileKey: tabConfig[active - 1].subTileKey,
+              minCrossAxisCount: active == 4 ? 3 : 4,
+              childAspectRatio: active == 4 ? 1.2 : 0.7,
+              imageAspectRatio: active == 4 ? 0.55 : 1,
+              onIconTap: tabConfig[active - 1].onIconTap,
+            )
+            : Text('我喜欢歌曲'),
       ],
     );
   }

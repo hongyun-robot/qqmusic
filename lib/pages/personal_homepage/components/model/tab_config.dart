@@ -1,3 +1,5 @@
+import 'package:qqmusic/model/m_list_base.dart' show MListBase;
+
 class TabConfig {
   late int id;
   late String name;
@@ -6,6 +8,7 @@ class TabConfig {
   late String titleKey;
   late String subTileKey;
   late Future Function(TabConfig i) onTab;
+  late void Function(MListBase i) onIconTap;
 
   TabConfig({
     required this.id,
@@ -15,6 +18,7 @@ class TabConfig {
     required this.titleKey,
     required this.subTileKey,
     required this.onTab,
+    required this.onIconTap,
   });
 
   TabConfig.fromJson(Map<String, dynamic> json) {
@@ -37,6 +41,7 @@ class TabConfig {
       subTileKey = json["subTileKey"];
     }
     onTab = json["onTab"];
+    onIconTap = json["onIconTap"];
   }
 
   static List<TabConfig> fromList(List<Map<String, dynamic>> list) {
@@ -52,6 +57,7 @@ class TabConfig {
     _data["titleKey"] = titleKey;
     _data["subTileKey"] = subTileKey;
     _data["onTab"] = onTab;
+    _data["onIconTap"] = onIconTap;
     return _data;
   }
 }

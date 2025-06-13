@@ -19,6 +19,7 @@ class ItemGridView<T> extends StatefulWidget {
     this.childAspectRatio = 0.7,
     this.imageAspectRatio = 1,
     this.minCrossAxisCount = 4,
+    this.onIconTap,
   });
   final List<T> data;
   final String idKey;
@@ -28,6 +29,7 @@ class ItemGridView<T> extends StatefulWidget {
   final double childAspectRatio;
   final double imageAspectRatio;
   final int minCrossAxisCount;
+  final void Function(T i)? onIconTap;
 
   @override
   State<ItemGridView> createState() => _ItemGridViewState<T>();
@@ -176,13 +178,19 @@ class _ItemGridViewState<T> extends State<ItemGridView> {
                               flex: 1,
                               child:
                                   currentItem == i.getField<int>(widget.idKey)
-                                      ? MouseRegion(
-                                        cursor: SystemMouseCursors.click,
-                                        child: ZIcon(
-                                          icon: Icons.delete_outline_rounded,
-                                          color: ICON_STYLE.defaultColor,
-                                          hoverColor: ICON_STYLE.hoverColor,
-                                          size: 20,
+                                      ? GestureDetector(
+                                        onTap: () {
+                                          widget.onIconTap ??
+                                              widget.onIconTap!(i);
+                                        },
+                                        child: MouseRegion(
+                                          cursor: SystemMouseCursors.click,
+                                          child: ZIcon(
+                                            icon: Icons.delete_outline_rounded,
+                                            color: ICON_STYLE.defaultColor,
+                                            hoverColor: ICON_STYLE.hoverColor,
+                                            size: 20,
+                                          ),
                                         ),
                                       )
                                       : SizedBox(),
