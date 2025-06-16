@@ -40,7 +40,6 @@ class _ZTextState extends State<ZText> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    print('-------------');
     _controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 150),

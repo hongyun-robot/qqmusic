@@ -67,7 +67,7 @@ class NetworkManager {
       );
       return response.data;
     } on DioException catch (e) {
-      throw e;
+      Logger.instance.e(e.toString());
     }
   }
 }

@@ -51,6 +51,7 @@ class Mdetail {
       _data["data"] = data?.toJson();
     }
     _data["result"] = result;
+    _data["errMsg"] = errMsg;
     return _data;
   }
 }
@@ -411,31 +412,31 @@ class Mlist extends MListBase {
 }
 
 class Mymusic {
-  String? title;
-  String? picurl;
-  String? laypic;
-  String? subtitle;
-  String? jumpurl;
-  int? jumptype;
-  String? jumpkey;
-  String? id;
-  MusicBykey? musicBykey;
-  int? type;
+  late String title;
+  late String picurl;
+  late String laypic;
+  late String subtitle;
+  late String jumpurl;
+  late int jumptype;
+  late String jumpkey;
+  late String id;
+  late MusicBykey musicBykey;
+  late int type;
   int? num0;
   int? num1;
   int? num2;
 
   Mymusic({
-    this.title,
-    this.picurl,
-    this.laypic,
-    this.subtitle,
-    this.jumpurl,
-    this.jumptype,
-    this.jumpkey,
-    this.id,
-    this.musicBykey,
-    this.type,
+    required this.title,
+    required this.picurl,
+    required this.laypic,
+    required this.subtitle,
+    required this.jumpurl,
+    required this.jumptype,
+    required this.jumpkey,
+    required this.id,
+    required this.musicBykey,
+    required this.type,
     this.num0,
     this.num1,
     this.num2,
@@ -468,9 +469,9 @@ class Mymusic {
     }
     if (json["music_bykey"] is Map) {
       musicBykey =
-          json["music_bykey"] == null
+          (json["music_bykey"] == null
               ? null
-              : MusicBykey.fromJson(json["music_bykey"]);
+              : MusicBykey.fromJson(json["music_bykey"]))!;
     }
     if (json["type"] is int) {
       type = json["type"];

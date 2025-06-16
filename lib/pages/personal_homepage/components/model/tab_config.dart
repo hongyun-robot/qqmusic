@@ -1,5 +1,3 @@
-import 'package:qqmusic/model/m_list_base.dart' show MListBase;
-
 class TabConfig {
   late int id;
   late String name;
@@ -8,7 +6,7 @@ class TabConfig {
   late String titleKey;
   late String subTileKey;
   late Future Function(TabConfig i) onTab;
-  late void Function(MListBase i) onIconTap;
+  late void Function<T>(T i) onIconTap;
 
   TabConfig({
     required this.id,
