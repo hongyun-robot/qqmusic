@@ -70,9 +70,7 @@ class Data {
     _data["ts"] = ts;
     _data["start_ts"] = startTs;
     _data["traceid"] = traceid;
-    if (req1 != null) {
-      _data["req_1"] = req1?.toJson();
-    }
+    _data["req_1"] = req1.toJson();
     return _data;
   }
 }
@@ -347,33 +345,19 @@ class Data1 {
     _data["accessed_byfav"] = accessedByfav;
     _data["optype"] = optype;
     _data["filter_song_num"] = filterSongNum;
-    if (dirinfo != null) {
-      _data["dirinfo"] = dirinfo?.toJson();
-    }
-    if (songlist != null) {
-      _data["songlist"] = songlist?.map((e) => e.toJson()).toList();
-    }
+    _data["dirinfo"] = dirinfo.toJson();
+    _data["songlist"] = songlist.map((e) => e.toJson()).toList();
     _data["login_uin"] = loginUin;
-    if (invalidSong != null) {
-      _data["invalid_song"] = invalidSong;
-    }
-    if (filteredSong != null) {
-      _data["filtered_song"] = filteredSong;
-    }
-    if (adList != null) {
-      _data["ad_list"] = adList;
-    }
+    _data["invalid_song"] = invalidSong;
+    _data["filtered_song"] = filteredSong;
+    _data["ad_list"] = adList;
     _data["total_song_num"] = totalSongNum;
     _data["encrypt_login"] = encryptLogin;
     _data["ct"] = ct;
     _data["cv"] = cv;
     _data["ip"] = ip;
-    if (orderlist != null) {
-      _data["orderlist"] = orderlist;
-    }
-    if (cmtUrlBykey != null) {
-      _data["cmtURL_bykey"] = cmtUrlBykey?.toJson();
-    }
+    _data["orderlist"] = orderlist;
+    _data["cmtURL_bykey"] = cmtUrlBykey.toJson();
     _data["srf_ip"] = srfIp;
     _data["referer"] = referer;
     _data["namedflag"] = namedflag;
@@ -381,35 +365,17 @@ class Data1 {
     _data["adTitle"] = adTitle;
     _data["adUrl"] = adUrl;
     _data["isForbidComment"] = isForbidComment;
-    if (songtag != null) {
-      _data["songtag"] = songtag;
-    }
-    if (toplistSong != null) {
-      _data["toplist_song"] = toplistSong;
-    }
+    _data["songtag"] = songtag;
+    _data["toplist_song"] = toplistSong;
     _data["toplist_nolimit"] = toplistNolimit;
-    if (sacForbid != null) {
-      _data["sac_forbid"] = sacForbid;
-    }
-    if (birthday != null) {
-      _data["birthday"] = birthday;
-    }
-    if (aiExt != null) {
-      _data["aiExt"] = aiExt?.toJson();
-    }
-    if (vecSongidNewtime != null) {
-      _data["vec_songid_newtime"] = vecSongidNewtime;
-    }
-    if (vecSongidType != null) {
-      _data["vec_songid_type"] = vecSongidType?.map((e) => e.toJson()).toList();
-    }
-    if (vecAiExtern != null) {
-      _data["vec_ai_extern"] = vecAiExtern;
-    }
+    _data["sac_forbid"] = sacForbid;
+    _data["birthday"] = birthday;
+    _data["aiExt"] = aiExt.toJson();
+    _data["vec_songid_newtime"] = vecSongidNewtime;
+    _data["vec_songid_type"] = vecSongidType.map((e) => e.toJson()).toList();
+    _data["vec_ai_extern"] = vecAiExtern;
     _data["recomUgcValid"] = recomUgcValid;
-    if (quickListenVid != null) {
-      _data["quickListenVid"] = quickListenVid;
-    }
+    _data["quickListenVid"] = quickListenVid;
     _data["bitflag"] = bitflag;
     _data["hasmore"] = hasmore;
     return _data;
@@ -672,6 +638,7 @@ class Songlist {
   late Ksong ksong;
   late File file;
   late Volume volume;
+  late Action action;
   late Pay pay;
   late int uiAction;
   late int newIcon;
@@ -715,6 +682,7 @@ class Songlist {
     required this.singer,
     required this.album,
     required this.mv,
+    required this.action,
     required this.ksong,
     required this.file,
     required this.volume,
@@ -813,6 +781,10 @@ class Songlist {
     if (json["mv"] is Map) {
       mv = (json["mv"] == null ? null : Mv.fromJson(json["mv"]))!;
     }
+    if (json["action"] is Map) {
+      action =
+          (json["action"] == null ? null : Action.fromJson(json["action"]))!;
+    }
     if (json["ksong"] is Map) {
       ksong = (json["ksong"] == null ? null : Ksong.fromJson(json["ksong"]))!;
     }
@@ -905,27 +877,14 @@ class Songlist {
     _data["fnote"] = fnote;
     _data["url"] = url;
     _data["time_public"] = timePublic;
-    if (singer != null) {
-      _data["singer"] = singer?.map((e) => e.toJson()).toList();
-    }
-    if (album != null) {
-      _data["album"] = album?.toJson();
-    }
-    if (mv != null) {
-      _data["mv"] = mv?.toJson();
-    }
-    if (ksong != null) {
-      _data["ksong"] = ksong?.toJson();
-    }
-    if (file != null) {
-      _data["file"] = file?.toJson();
-    }
-    if (volume != null) {
-      _data["volume"] = volume?.toJson();
-    }
-    if (pay != null) {
-      _data["pay"] = pay?.toJson();
-    }
+    _data["singer"] = singer.map((e) => e.toJson()).toList();
+    _data["album"] = album.toJson();
+    _data["mv"] = mv.toJson();
+    _data["ksong"] = ksong.toJson();
+    _data["file"] = file.toJson();
+    _data["volume"] = volume.toJson();
+    _data["action"] = action.toJson();
+    _data["pay"] = pay.toJson();
     _data["uiAction"] = uiAction;
     _data["new_icon"] = newIcon;
     _data["tid"] = tid;
@@ -937,15 +896,11 @@ class Songlist {
     _data["pingpong"] = pingpong;
     _data["data_type"] = dataType;
     _data["ppurl"] = ppurl;
-    if (vs != null) {
-      _data["vs"] = vs;
-    }
+    _data["vs"] = vs;
     _data["bpm"] = bpm;
     _data["ktag"] = ktag;
     _data["team"] = team;
-    if (vf != null) {
-      _data["vf"] = vf;
-    }
+    _data["vf"] = vf;
     _data["bf"] = bf;
     return _data;
   }
@@ -1007,6 +962,84 @@ class Pay {
     _data["pay_down"] = payDown;
     _data["pay_status"] = payStatus;
     _data["time_free"] = timeFree;
+    return _data;
+  }
+}
+
+class Action {
+  late int alert;
+  late int msgshare;
+  late int msgfav;
+  late int msgid;
+  late int msgdown;
+  late int icons;
+  late int msgpay;
+  late int switch2;
+  late int icon2;
+  late int switch1;
+
+  Action({
+    required this.alert,
+    required this.msgshare,
+    required this.msgfav,
+    required this.msgid,
+    required this.msgdown,
+    required this.icons,
+    required this.msgpay,
+    required this.switch2,
+    required this.icon2,
+    required this.switch1,
+  });
+
+  Action.fromJson(Map<String, dynamic> json) {
+    if (json["alert"] is int) {
+      alert = json["alert"];
+    }
+    if (json["msgshare"] is int) {
+      msgshare = json["msgshare"];
+    }
+    if (json["msgfav"] is int) {
+      msgfav = json["msgfav"];
+    }
+    if (json["msgid"] is int) {
+      msgid = json["msgid"];
+    }
+    if (json["msgdown"] is int) {
+      msgdown = json["msgdown"];
+    }
+    if (json["icons"] is int) {
+      icons = json["icons"];
+    }
+    if (json["msgpay"] is int) {
+      msgpay = json["msgpay"];
+    }
+    if (json["switch2"] is int) {
+      switch2 = json["switch2"];
+    }
+    if (json["icon2"] is int) {
+      icon2 = json["icon2"];
+    }
+    if (json["switch1"] is int) {
+      switch1 = json["switch1"];
+    }
+  }
+
+  static List<Action> fromList(List<Map<String, dynamic>> list) {
+    return list.map(Action.fromJson).toList();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["alert"] = alert;
+    _data["msgshare"] = msgshare;
+    _data["msgfav"] = msgfav;
+    _data["msgid"] = msgid;
+    _data["msgdown"] = msgdown;
+    _data["icons"] = icons;
+    _data["msgpay"] = msgpay;
+    _data["switch2"] = switch2;
+    _data["icon2"] = icon2;
+    _data["switch1"] = switch1;
     return _data;
   }
 }
