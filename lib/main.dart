@@ -187,8 +187,15 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp.router(
       title: 'QQ Music Demo',
       debugShowCheckedModeBanner: false,
-      theme: GlobalThemData.lightThemeData,
+      // theme: GlobalThemData.lightThemeData,
+      theme: createLightThemeData(),
       routerConfig: widget._router,
     );
   }
+}
+
+ThemeData createLightThemeData() {
+  return ThemeData.light(
+    useMaterial3: true,
+  ).copyWith(textTheme: ThemeData(fontFamily: 'MSYH').textTheme);
 }

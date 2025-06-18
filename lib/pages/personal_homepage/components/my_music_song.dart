@@ -18,10 +18,25 @@ class MyMusicSong extends StatefulWidget {
 }
 
 class _MyMusicSongState extends State<MyMusicSong> {
+  int? activeId;
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: widget.data.map((v) => MyMusicSongItem(data: v)).toList(),
+      children:
+          widget.data
+              .map(
+                (v) => MyMusicSongItem(
+                  // key: ValueKey(v.id),
+                  data: v,
+                  active: activeId == v.id,
+                  onTap: (data) {
+                    setState(() {
+                      activeId = data.id;
+                    });
+                  },
+                ),
+              )
+              .toList(),
     );
   }
 }

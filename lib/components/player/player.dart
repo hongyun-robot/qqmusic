@@ -5,8 +5,7 @@
 */
 import 'package:flutter/material.dart';
 import 'package:qqmusic/components/z_icon/z_icon.dart';
-import 'package:qqmusic/components/player/components/text_icon.dart'
-    show TextIcon;
+import 'package:qqmusic/components/text_icon/text_icon.dart' show TextIcon;
 import 'package:qqmusic/const/const.dart'
     show PRIMARY_COLOR, PRIMARY_ICON_COLOR;
 import 'package:qqmusic/const/icon-style.dart' show ICON_STYLE;

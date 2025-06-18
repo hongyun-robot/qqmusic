@@ -1265,11 +1265,11 @@ class Ksong {
 }
 
 class Mv {
-  int? id;
-  String? vid;
-  int? vt;
+  late int id;
+  late String vid;
+  late int vt;
 
-  Mv({this.id, this.vid, this.vt});
+  Mv({required this.id, required this.vid, required this.vt});
 
   Mv.fromJson(Map<String, dynamic> json) {
     if (json["id"] is int) {
