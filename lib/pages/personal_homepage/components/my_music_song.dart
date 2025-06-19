@@ -4,6 +4,8 @@
  * my_music_song.dart
 */
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:qqmusic/bloc/scroll_bloc.dart';
 import 'package:qqmusic/components/z_text/z_text.dart';
 import 'package:qqmusic/const/icon-style.dart';
 import 'package:qqmusic/model/songlist/collect_song.dart';
@@ -19,6 +21,7 @@ class MyMusicSong extends StatefulWidget {
 
 class _MyMusicSongState extends State<MyMusicSong> {
   int? activeId;
+
   @override
   Widget build(BuildContext context) {
     return Column(

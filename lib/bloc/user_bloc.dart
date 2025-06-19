@@ -21,6 +21,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserLoaded(user));
       } else {
         Logger.instance.e(user.errMsg);
+        final refresh = await UserApi().refresh();
+        print(refresh);
         emit(UserLoginState(isLogin: false));
       }
     });

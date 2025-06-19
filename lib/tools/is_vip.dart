@@ -9,5 +9,10 @@ bool isVIP(Songlist data) {
           .toList()
           .reversed
           .toList();
-  return f[18] != 0;
+
+  try {
+    return f[18] != 0;
+  } catch (e) {
+    return false;
+  }
 }

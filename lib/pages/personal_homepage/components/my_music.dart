@@ -5,8 +5,9 @@
 */
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:qqmusic/api/user/song_list.dart';
+import 'package:qqmusic/api/song_list/song_list.dart';
 import 'package:qqmusic/api/user/user.dart' show UserApi;
+import 'package:qqmusic/bloc/scroll_bloc.dart';
 import 'package:qqmusic/bloc/user_bloc.dart';
 import 'package:qqmusic/components/item_grid_view/item_grid_view.dart';
 import 'package:qqmusic/components/z_text/z_text.dart';
@@ -17,6 +18,7 @@ import 'package:qqmusic/model/songlist/collect_song.dart';
 import 'package:qqmusic/pages/personal_homepage/components/model/tab_config.dart';
 import 'package:qqmusic/pages/personal_homepage/components/my_music_song.dart'
     show MyMusicSong;
+import 'package:qqmusic/tools/func_utils.dart';
 
 class MyMusic extends StatefulWidget {
   const MyMusic({super.key});
@@ -26,7 +28,12 @@ class MyMusic extends StatefulWidget {
 }
 
 class _MyMusicState extends State<MyMusic> {
-  int active = 2;
+  int active = 1;
+  int dissid = 0;
+  bool isRequest = true;
+  int song_begin = 0;
+  int song_num = 30;
+  int songMaxNum = -1;
   late final List<TabConfig> tabConfig;
   List<MListBase> listData = [];
   List<Songlist> musicData = [];
@@ -44,11 +51,51 @@ class _MyMusicState extends State<MyMusic> {
     });
   }
 
+  void getMusicData() {
+    SongListApi().collectSong(dissid, song_begin, song_num).then((v) {
+      if (v.result == 100) {
+        List<Songlist> data = v.data!.req1.data!.songlist;
+        songMaxNum = v.data!.req1.data!.totalSongNum;
+        if ((musicData.length + data.length) >= songMaxNum) {
+          isRequest = false;
+        } else {
+          isRequest = true;
+        }
+        // if ()
+        setState(() {
+          musicData.addAll(data);
+        });
+      }
+    });
+  }
+
   @override
   void initState() {
-    super.initState();
     _userState = context.read<UserBloc>().state;
-    getData();
+    ScrollState scrollState = context.read<ScrollBloc>().state;
+
+    if (_userState is UserLoaded) {
+      dissid = int.parse(
+        (_userState as UserLoaded).userInfo.data!.mymusic[0].id,
+      );
+    }
+    getMusicData();
+
+    if (scrollState is ScrollInitial) {
+      if (scrollState.controller != null) {
+        // FunctionProxy listener = FunctionProxy(, timeout: 1000);
+        scrollState.controller!.addListener(() {
+          final double maxPixels =
+              scrollState.controller!.position.maxScrollExtent;
+          if (isRequest && scrollState.controller!.offset >= maxPixels - 200) {
+            isRequest = false;
+            print('request data');
+            song_begin += song_num;
+            getMusicData();
+          }
+        });
+      }
+    }
     tabConfig = [
       TabConfig(
         id: 1,
@@ -58,23 +105,8 @@ class _MyMusicState extends State<MyMusic> {
         titleKey: '',
         subTileKey: '',
         onTab: (TabConfig i) async {
-          if (_userState is UserLoaded) {
-            SongListApi()
-                .collectSong(
-                  int.parse(
-                    (_userState as UserLoaded).userInfo.data!.mymusic[0].id,
-                  ),
-                  0,
-                  50,
-                )
-                .then((v) {
-                  if (v.result == 100) {
-                    setState(() {
-                      musicData = v.data!.req1.data!.songlist;
-                    });
-                  }
-                });
-          }
+          if (songMaxNum >= musicData.length) return;
+          getMusicData();
         },
         onIconTap: <MListBase>(MListBase i) {},
       ),
@@ -89,15 +121,7 @@ class _MyMusicState extends State<MyMusic> {
           setState(() {
             listData = [];
           });
-          UserApi().collectSongList().then((v) {
-            if (v.result == 100) {
-              setState(() {
-                listData = v.data!.mlist;
-              });
-            } else {
-              listData = [];
-            }
-          });
+          getData();
         },
         onIconTap: <T>(T i) {
           if (i is Mlist) {
@@ -156,6 +180,8 @@ class _MyMusicState extends State<MyMusic> {
         onIconTap: <MListBase>(MListBase i) {},
       ),
     ];
+
+    super.initState();
   }
 
   @override

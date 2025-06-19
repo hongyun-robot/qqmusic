@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart'
     show GoRoute, GoRouter, GoRouterState, RouteBase, ShellRoute;
-import 'package:qqmusic/api/user/song_list.dart';
+import 'package:qqmusic/api/song_list/song_list.dart';
 import 'package:qqmusic/api/user/user.dart';
+import 'package:qqmusic/bloc/scroll_bloc.dart';
 import 'package:qqmusic/bloc/user_bloc.dart' show UserBloc;
 import 'package:qqmusic/components/transition_resolver.dart'
     show transitionResolver;
@@ -80,9 +81,11 @@ class MyApp extends StatefulWidget {
   late final GoRouter _router;
   // Bloc
   late final UserBloc userBloc;
+  late final ScrollBloc scrollBloc;
 
   MyApp({super.key}) {
     userBloc = UserBloc();
+    scrollBloc = ScrollBloc();
     _router = GoRouter(
       navigatorKey: _rootNavigatorKey,
       initialLocation: '/PersonalHomepage',
@@ -91,7 +94,10 @@ class MyApp extends StatefulWidget {
           navigatorKey: _shellNavigatorKey,
           builder: (BuildContext context, GoRouterState state, Widget child) {
             return MultiBlocProvider(
-              providers: [BlocProvider.value(value: userBloc)],
+              providers: [
+                BlocProvider.value(value: userBloc),
+                BlocProvider.value(value: scrollBloc),
+              ],
               child: HomePage(child: child),
             );
           },

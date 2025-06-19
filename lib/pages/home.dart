@@ -1,11 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder;
+import 'package:provider/provider.dart';
+import 'package:qqmusic/bloc/scroll_bloc.dart';
 import 'package:qqmusic/components/player/player.dart';
 import 'package:qqmusic/components/sidebar/sidebar.dart';
 import 'package:qqmusic/components/topbar/topbar.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({required this.child, super.key});
   final Widget child;
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final ScrollController _controller = ScrollController();
+  late final ScrollBloc _scrollBloc;
+
+  @override
+  void initState() {
+    _scrollBloc = context.read<ScrollBloc>();
+    _scrollBloc.add(ScrollLoadedEvent(_controller));
+    // TODO: implement initState
+    // _controller.addListener(() {
+    //   print(_controller.offset);
+    // });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext build) {
@@ -33,6 +62,7 @@ class HomePage extends StatelessWidget {
                             Topbar(),
                             Expanded(
                               child: SingleChildScrollView(
+                                controller: _controller,
                                 child: Container(
                                   constraints: constraints.copyWith(
                                     minHeight: 0,
@@ -51,7 +81,7 @@ class HomePage extends StatelessWidget {
                                       bottomRight: Radius.circular(8),
                                     ),
                                   ),
-                                  child: IntrinsicHeight(child: child),
+                                  child: IntrinsicHeight(child: widget.child),
                                 ),
                               ),
                             ),

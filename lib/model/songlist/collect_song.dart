@@ -1387,92 +1387,92 @@ class Singer {
 }
 
 class Dirinfo {
-  int? id;
-  int? hostUin;
-  int? dirid;
-  String? title;
-  String? picurl;
-  int? picid;
-  String? desc;
-  List<dynamic>? vecTagid;
-  List<dynamic>? vecTagname;
-  int? ctime;
-  int? mtime;
-  int? listennum;
-  int? ordernum;
-  String? picmid;
-  int? dirtype;
-  String? hostNick;
-  int? songnum;
-  int? ordertime;
-  int? show;
-  String? picurl2;
-  int? songUpdateTime;
-  int? songUpdateNum;
-  int? disstype;
-  int? aiUin;
-  int? dv2;
-  int? dirShow;
-  String? encryptUin;
-  String? encryptAiUin;
-  int? owndir;
-  String? headurl;
-  List<dynamic>? tag;
-  Creator? creator;
-  int? status;
-  String? edgeMark;
-  String? layerUrl;
-  String? ext1;
-  String? ext2;
-  String? originTitle;
-  bool? adTag;
-  String? aiToast;
-  int? role;
-  int? rl2;
+  late int id;
+  late int hostUin;
+  late int dirid;
+  late String title;
+  late String picurl;
+  late int picid;
+  late String? desc;
+  late List<dynamic> vecTagid;
+  late List<dynamic> vecTagname;
+  late int ctime;
+  late int mtime;
+  late int listennum;
+  late int ordernum;
+  late String picmid;
+  late int dirtype;
+  late String hostNick;
+  late int songnum;
+  late int ordertime;
+  late int show;
+  late String picurl2;
+  late int songUpdateTime;
+  late int songUpdateNum;
+  late int disstype;
+  late int aiUin;
+  late int dv2;
+  late int dirShow;
+  late String encryptUin;
+  late String encryptAiUin;
+  late int owndir;
+  late String headurl;
+  late List<dynamic> tag;
+  late Creator creator;
+  late int status;
+  late String edgeMark;
+  late String layerUrl;
+  late String ext1;
+  late String ext2;
+  late String originTitle;
+  late bool adTag;
+  late String aiToast;
+  late int role;
+  late int rl2;
 
   Dirinfo({
-    this.id,
-    this.hostUin,
-    this.dirid,
-    this.title,
-    this.picurl,
-    this.picid,
-    this.desc,
-    this.vecTagid,
-    this.vecTagname,
-    this.ctime,
-    this.mtime,
-    this.listennum,
-    this.ordernum,
-    this.picmid,
-    this.dirtype,
-    this.hostNick,
-    this.songnum,
-    this.ordertime,
-    this.show,
-    this.picurl2,
-    this.songUpdateTime,
-    this.songUpdateNum,
-    this.disstype,
-    this.aiUin,
-    this.dv2,
-    this.dirShow,
-    this.encryptUin,
-    this.encryptAiUin,
-    this.owndir,
-    this.headurl,
-    this.tag,
-    this.creator,
-    this.status,
-    this.edgeMark,
-    this.layerUrl,
-    this.ext1,
-    this.ext2,
-    this.originTitle,
-    this.adTag,
-    this.aiToast,
-    this.role,
-    this.rl2,
+    required this.id,
+    required this.hostUin,
+    required this.dirid,
+    required this.title,
+    required this.picurl,
+    required this.picid,
+    required this.desc,
+    required this.vecTagid,
+    required this.vecTagname,
+    required this.ctime,
+    required this.mtime,
+    required this.listennum,
+    required this.ordernum,
+    required this.picmid,
+    required this.dirtype,
+    required this.hostNick,
+    required this.songnum,
+    required this.ordertime,
+    required this.show,
+    required this.picurl2,
+    required this.songUpdateTime,
+    required this.songUpdateNum,
+    required this.disstype,
+    required this.aiUin,
+    required this.dv2,
+    required this.dirShow,
+    required this.encryptUin,
+    required this.encryptAiUin,
+    required this.owndir,
+    required this.headurl,
+    required this.tag,
+    required this.creator,
+    required this.status,
+    required this.edgeMark,
+    required this.layerUrl,
+    required this.ext1,
+    required this.ext2,
+    required this.originTitle,
+    required this.adTag,
+    required this.aiToast,
+    required this.role,
+    required this.rl2,
   });
 
   Dirinfo.fromJson(Map<String, dynamic> json) {
@@ -1571,7 +1571,7 @@ class Dirinfo {
     }
     if (json["creator"] is Map) {
       creator =
-          json["creator"] == null ? null : Creator.fromJson(json["creator"]);
+          (json["creator"] == null ? null : Creator.fromJson(json["creator"]))!;
     }
     if (json["status"] is int) {
       status = json["status"];
@@ -1618,12 +1618,8 @@ class Dirinfo {
     _data["picurl"] = picurl;
     _data["picid"] = picid;
     _data["desc"] = desc;
-    if (vecTagid != null) {
-      _data["vec_tagid"] = vecTagid;
-    }
-    if (vecTagname != null) {
-      _data["vec_tagname"] = vecTagname;
-    }
+    _data["vec_tagid"] = vecTagid;
+    _data["vec_tagname"] = vecTagname;
     _data["ctime"] = ctime;
     _data["mtime"] = mtime;
     _data["listennum"] = listennum;
@@ -1645,12 +1641,8 @@ class Dirinfo {
     _data["encrypt_ai_uin"] = encryptAiUin;
     _data["owndir"] = owndir;
     _data["headurl"] = headurl;
-    if (tag != null) {
-      _data["tag"] = tag;
-    }
-    if (creator != null) {
-      _data["creator"] = creator?.toJson();
-    }
+    _data["tag"] = tag;
+    _data["creator"] = creator.toJson();
     _data["status"] = status;
     _data["edge_mark"] = edgeMark;
     _data["layer_url"] = layerUrl;

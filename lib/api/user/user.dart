@@ -13,9 +13,6 @@ import 'package:qqmusic/model/mv_list.dart';
 import 'package:qqmusic/model/refresh.dart';
 import 'package:qqmusic/model/song_list.dart';
 import 'package:qqmusic/net/network_manager.dart' show NetworkManager;
-import 'package:qqmusic/tools/constant.dart' show cookiePathDirName;
-import 'package:qqmusic/tools/logger.dart';
-import 'package:qqmusic/tools/path.dart' show PathHelper;
 
 class UserApi extends Request {
   /// 单例
