@@ -4,12 +4,15 @@
  * my_music_song_item.dart
 */
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:qqmusic/bloc/music_bloc.dart';
 import 'package:qqmusic/components/text_icon/text_icon.dart' show TextIcon;
 import 'package:qqmusic/components/z_icon/z_icon.dart';
 import 'package:qqmusic/components/z_text/z_text.dart' show ZText;
 import 'package:qqmusic/const/const.dart' show PRIMARY_COLOR;
 import 'package:qqmusic/const/icon-style.dart' show ICON_STYLE;
 import 'package:qqmusic/model/songlist/collect_song.dart';
+import 'package:qqmusic/pages/personal_homepage/components/z_text_span.dart';
 import 'package:qqmusic/tools/is_vip.dart';
 
 class MyMusicSongItem extends StatefulWidget {
@@ -28,6 +31,7 @@ class MyMusicSongItem extends StatefulWidget {
 }
 
 class _MyMusicSongItemState extends State<MyMusicSongItem> {
+  late final MusicBloc _musicBloc;
   late bool mouseInside;
   late final bool isVip;
   late final bool isMV;
@@ -48,6 +52,7 @@ class _MyMusicSongItemState extends State<MyMusicSongItem> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _musicBloc = context.read<MusicBloc>();
     mouseInside = widget.active;
     isVip = isVIP(widget.data);
     isMV = widget.data.mv.vid != '';
@@ -66,6 +71,10 @@ class _MyMusicSongItemState extends State<MyMusicSongItem> {
         mouseInside = widget.active;
       });
     }
+  }
+
+  void onTapPlay() {
+    _musicBloc.add(CurrentMusicStateEvent(widget.data));
   }
 
   @override
@@ -211,6 +220,7 @@ class _MyMusicSongItemState extends State<MyMusicSongItem> {
                                   icon: Icons.play_arrow_rounded,
                                   color: Color.fromRGBO(96, 96, 96, 1.0),
                                   hoverColor: ICON_STYLE.hoverColor,
+                                  onTap: onTapPlay,
                                 ),
                                 ZIcon(
                                   icon: Icons.add_circle_rounded,
@@ -244,6 +254,21 @@ class _MyMusicSongItemState extends State<MyMusicSongItem> {
                 ),
                 Flexible(
                   flex: 25,
+                  // child: Text.rich(
+                  //   overflow: TextOverflow.ellipsis,
+                  //   TextSpan(
+                  //     children: RichTextExt.createTextSpans(
+                  //       // text: widget.data.singer.map((v) => v.name).toString(),
+                  //       text: '爱的胡斐和v挨揍返回',
+                  //       textTaps: ['斐和'],
+                  //       // textTaps:
+                  //       //     widget.data.singer.map((v) => v.name).toList(),
+                  //       onLink: (text) {
+                  //         print(text);
+                  //       },
+                  //     ),
+                  //   ),
+                  // ),
                   child: Row(
                     children:
                         widget.data.singer.asMap().entries.map((entry) {

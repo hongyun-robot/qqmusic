@@ -5,14 +5,18 @@
 */
 import 'dart:async';
 
-import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
+import 'package:qqmusic/api/song/song.dart';
+import 'package:qqmusic/bloc/music_bloc.dart';
 import 'package:qqmusic/components/z_icon/z_icon.dart';
 import 'package:qqmusic/components/text_icon/text_icon.dart' show TextIcon;
 import 'package:qqmusic/const/const.dart'
-    show PRIMARY_COLOR, PRIMARY_ICON_COLOR;
+    show PRIMARY_COLOR, PRIMARY_ICON_COLOR, SongType;
 import 'package:qqmusic/const/icon-style.dart' show ICON_STYLE;
+import 'package:qqmusic/model/song/song.dart';
 import 'package:qqmusic/tools/format_duration.dart';
 
 class Player extends StatefulWidget {
@@ -29,7 +33,7 @@ class _PlayerState extends State<Player> {
   Duration duration = Duration(seconds: 0);
   Duration curPos = Duration(seconds: 0);
   bool isPaused = true;
-  late Timer timer;
+  Timer? timer;
   double progressBarWidth = 0.0;
 
   @override
@@ -37,21 +41,32 @@ class _PlayerState extends State<Player> {
     super.initState();
   }
 
-  void initSource() async {
-    source = await soloud.loadUrl(
-      'http://isure6-stream-qqmusic.a.bdycdn.cn/aqqmusic.tc.qq.com/O600003FE6zi2r4TAF.ogg?fromtag=120073&guid=6435693729&qqm_typec_md5hash=ab2968ef8d57fa304b1eca42cb6704da&qqm_typec_timestamp=685a398a&uin=1836017030&vkey=79ECE0D5B2F0B93BE31888E32E07A38460D91A62671726C779BED52E9A39566BEF36461DF254CD94581F111AB20154CB3C7FB93FAE7B0205__v215257eb0',
-    );
+  void initSource(String url) async {
+    if (url == '') return;
+    if (source != null) {
+      soloud.disposeAllSources();
+      // soloud.disposeSource(source!);
+    }
+    source = await soloud.loadUrl(url);
 
     source!.allInstancesFinished.first.then((_) {
       soloud.disposeSource(source!);
-      timer.cancel();
+      timer!.cancel();
     });
+    initHandle();
 
     // handle
   }
 
   void initHandle() async {
+    if (handle != null) {
+      bool isPlaying = soloud.getIsValidVoiceHandle(handle!);
+      if (isPlaying) {
+        soloud.stop(handle!);
+      }
+    }
     handle = await soloud.play(source!);
+    // handle
     setState(() {
       duration = soloud.getLength(source!);
       isPaused = false;
@@ -61,6 +76,9 @@ class _PlayerState extends State<Player> {
 
   void initTimer() {
     if (handle != null) {
+      if (timer != null) {
+        timer!.cancel();
+      }
       timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
         setState(() {
           curPos = soloud.getPosition(handle!);
@@ -76,248 +94,364 @@ class _PlayerState extends State<Player> {
   void dispose() {
     // TODO: implement dispose
     // player.dispose();
-    timer.cancel();
+    if (timer != null) {
+      timer!.cancel();
+    }
     SoLoud.instance.deinit();
     super.dispose();
+  }
+
+  List<InlineSpan> joinSingerName(
+    List<Singer> singer,
+    void Function(Singer singer) onTap,
+  ) {
+    int length = singer.length + (singer.length - 1);
+    List<Singer> data = [];
+    for (var i = 0; i < length; i++) {
+      if (i % 2 == 0) {
+        data.add(singer[(i / 2).floor()]);
+      } else {
+        data.add(
+          Singer(id: 0, mid: '0', name: '/', title: '/', type: 0, uin: 0),
+        );
+      }
+    }
+    return data
+        .map(
+          (v) => TextSpan(
+            text: v.title,
+            style: TextStyle(color: Colors.black),
+            recognizer:
+                TapGestureRecognizer()
+                  ..onTap = () {
+                    onTap(v);
+                  },
+          ),
+        )
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(14, 0, 13, 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
-                  ),
-                  child: const Image(
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.fill,
-                    image: AssetImage('assets/images/demo/song_pic.webp'),
-                  ),
-                ),
-                SizedBox(width: 11),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(children: [Text('淋雨一直走'), Text('-'), Text('张韶涵')]),
-                    SizedBox(height: 13),
-                    Row(
-                      spacing: 22.0,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        // Icon(Icons.favorite_rounded, color: Colors.red),
-                        ZIcon(
-                          icon: Icons.favorite_rounded,
-                          color: Color.fromRGBO(255, 106, 106, 1.0),
-                          hoverColor: Color.fromRGBO(244, 85, 85, 1.0),
-                          message: '取消喜欢',
-                          size: 22,
-                        ),
-                        // Icon(Icons.comment_rounded),
-                        ZIcon(
-                          icon: Icons.comment_rounded,
-                          color: ICON_STYLE.defaultColor,
-                          hoverColor: ICON_STYLE.hoverColor,
-                          message: '评论',
-                          size: 21,
-                        ),
+      child: BlocListener<MusicBloc, MusicState>(
+        listenWhen: (previous, current) => current is CurrentMusicInfoState,
+        listener: (context, state) {
+          if (state is CurrentMusicInfoState) {
+            SongApi()
+                .url(state.data.data!.trackInfo.mid, SongType.standard, 0)
+                .then((v) {
+                  if (v.result == 100) {
+                    String url =
+                        v.data!.rawData.req0.data.midurlinfo[0].xcdnurl;
+                    initSource(url);
+                  }
+                });
+          }
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: BlocBuilder<MusicBloc, MusicState>(
+                buildWhen:
+                    (previous, current) => current is CurrentMusicInfoState,
+                builder: (context, state) {
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (state is CurrentMusicInfoState)
                         Container(
+                          clipBehavior: Clip.hardEdge,
                           decoration: BoxDecoration(
-                            border: Border.all(color: ICON_STYLE.defaultColor),
-                            borderRadius: BorderRadius.circular(100),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8),
+                            ),
                           ),
-                          child: ZIcon(
-                            icon: Icons.more_horiz_rounded,
-                            color: ICON_STYLE.defaultColor,
-                            hoverColor: ICON_STYLE.hoverColor,
-                            message: '更多',
-                            size: 16,
+                          child: Image(
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.fill,
+                            image: NetworkImage(
+                              "https://y.qq.com/music/photo_new/T002R300x300M000${state.data.data!.trackInfo.album.pmid != '' ? state.data.data!.trackInfo.album.pmid : state.data.data!.trackInfo.vs[1]}.jpg?max_age=2592000",
+                            ),
+                          ),
+                        )
+                      else
+                        Container(
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8),
+                            ),
+                          ),
+                          child: const Image(
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.fill,
+                            image: AssetImage(
+                              'assets/images/demo/song_pic.webp',
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+                      SizedBox(width: 11),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (state is CurrentMusicInfoState)
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: state.data.data!.trackInfo.title,
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    TextSpan(
+                                      text: ' - ',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    ...joinSingerName(
+                                      state.data.data!.trackInfo.singer,
+                                      (v) {
+                                        print(v.title);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              )
+                            // Row(
+                            //   children: [
+                            //     Text(state.data.data!.trackInfo.name),
+                            //     Text('-'),
+                            //     Text(
+                            //       joinSingerName(
+                            //         state.data.data!.trackInfo.singer,
+                            //       ),
+                            //     ),
+                            //   ],
+                            // )
+                            else
+                              Row(children: [Text('/'), Text('-'), Text('/')]),
+                            SizedBox(height: 13),
+                            Row(
+                              spacing: 22.0,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                // Icon(Icons.favorite_rounded, color: Colors.red),
+                                ZIcon(
+                                  icon: Icons.favorite_rounded,
+                                  color: Color.fromRGBO(255, 106, 106, 1.0),
+                                  hoverColor: Color.fromRGBO(244, 85, 85, 1.0),
+                                  message: '取消喜欢',
+                                  size: 22,
+                                ),
+                                // Icon(Icons.comment_rounded),
+                                ZIcon(
+                                  icon: Icons.comment_rounded,
+                                  color: ICON_STYLE.defaultColor,
+                                  hoverColor: ICON_STYLE.hoverColor,
+                                  message: '评论',
+                                  size: 21,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: ICON_STYLE.defaultColor,
+                                    ),
+                                    borderRadius: BorderRadius.circular(100),
+                                  ),
+                                  child: ZIcon(
+                                    icon: Icons.more_horiz_rounded,
+                                    color: ICON_STYLE.defaultColor,
+                                    hoverColor: ICON_STYLE.hoverColor,
+                                    message: '更多',
+                                    size: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
-          ),
-          Flexible(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // repeat_one_rounded
-                    // refresh
-                    ZIcon(
-                      icon: Icons.repeat_rounded,
-                      color: ICON_STYLE.defaultColor,
-                      hoverColor: ICON_STYLE.hoverColor,
-                      message: '列表循环',
-                      size: 30,
-                    ),
-                    SizedBox(width: 36),
-                    RotatedBox(
-                      quarterTurns: 2,
-                      child: ZIcon(
+
+            Flexible(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // repeat_one_rounded
+                      // refresh
+                      ZIcon(
+                        icon: Icons.repeat_rounded,
+                        color: ICON_STYLE.defaultColor,
+                        hoverColor: ICON_STYLE.hoverColor,
+                        message: '列表循环',
+                        size: 30,
+                      ),
+                      SizedBox(width: 36),
+                      RotatedBox(
+                        quarterTurns: 2,
+                        child: ZIcon(
+                          icon: Icons.last_page_rounded,
+                          color: Colors.black,
+                          hoverColor: ICON_STYLE.hoverColor,
+                          message: '上一首',
+                          size: 28,
+                        ),
+                      ),
+                      SizedBox(width: 18),
+                      // pause
+                      GestureDetector(
+                        onTap: () {
+                          if (handle != null) {
+                            SoLoud.instance.setPause(
+                              handle!,
+                              !SoLoud.instance.getPause(handle!),
+                            );
+                            setState(() {
+                              isPaused = SoLoud.instance.getPause(handle!);
+                              if (isPaused) {
+                                timer!.cancel();
+                              } else {
+                                initTimer();
+                              }
+                            });
+                          }
+                        },
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: Tooltip(
+                            message: isPaused ? '播放' : '暂停',
+                            padding: EdgeInsets.all(0),
+                            waitDuration: const Duration(seconds: 1),
+                            textStyle: TextStyle(color: Colors.black),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.black),
+                            ),
+                            child: Container(
+                              padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
+                              decoration: BoxDecoration(
+                                color: PRIMARY_ICON_COLOR,
+                                borderRadius: BorderRadius.circular(60),
+                              ),
+                              child: Icon(
+                                isPaused
+                                    ? Icons.play_arrow_rounded
+                                    : Icons.pause_rounded,
+                                size: 28,
+                              ),
+                              // child: Icon(Icons.pause_rounded, size: 28),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 18),
+                      ZIcon(
                         icon: Icons.last_page_rounded,
                         color: Colors.black,
                         hoverColor: ICON_STYLE.hoverColor,
-                        message: '上一首',
+                        message: '下一首',
                         size: 28,
                       ),
-                    ),
-                    SizedBox(width: 18),
-                    // pause
-                    GestureDetector(
-                      onTap: () {
-                        if (handle != null) {
-                          SoLoud.instance.setPause(
-                            handle!,
-                            !SoLoud.instance.getPause(handle!),
-                          );
-                          setState(() {
-                            isPaused = SoLoud.instance.getPause(handle!);
-                            if (isPaused) {
-                              timer.cancel();
-                            } else {
-                              initTimer();
-                            }
-                          });
-                        }
-                      },
-                      child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: Tooltip(
-                          message: isPaused ? '播放' : '暂停',
-                          padding: EdgeInsets.all(0),
-                          waitDuration: const Duration(seconds: 1),
-                          textStyle: TextStyle(color: Colors.black),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(color: Colors.black),
-                          ),
-                          child: Container(
-                            padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
-                            decoration: BoxDecoration(
-                              color: PRIMARY_ICON_COLOR,
-                              borderRadius: BorderRadius.circular(60),
-                            ),
-                            child: Icon(
-                              isPaused
-                                  ? Icons.play_arrow_rounded
-                                  : Icons.pause_rounded,
-                              size: 28,
-                            ),
-                            // child: Icon(Icons.pause_rounded, size: 28),
-                          ),
-                        ),
+                      SizedBox(width: 32),
+                      ZIcon(
+                        icon: Icons.volume_down_rounded,
+                        color: ICON_STYLE.defaultColor,
+                        hoverColor: ICON_STYLE.hoverColor,
+                        message: '音量：100%',
+                        size: 32,
                       ),
-                    ),
-                    SizedBox(width: 18),
-                    ZIcon(
-                      icon: Icons.last_page_rounded,
-                      color: Colors.black,
-                      hoverColor: ICON_STYLE.hoverColor,
-                      message: '下一首',
-                      size: 28,
-                    ),
-                    SizedBox(width: 32),
-                    ZIcon(
-                      icon: Icons.volume_down_rounded,
-                      color: ICON_STYLE.defaultColor,
-                      hoverColor: ICON_STYLE.hoverColor,
-                      message: '音量：100%',
-                      size: 32,
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text(
-                      formatDuration(curPos),
-                      style: TextStyle(fontSize: 11),
-                    ),
-                    SizedBox(width: 8),
-                    Flexible(
-                      child: Stack(
-                        children: [
-                          Container(
-                            color: Color.fromRGBO(229, 229, 229, 1.0),
-                            height: 3,
-                          ),
-                          FractionallySizedBox(
-                            widthFactor: progressBarWidth,
-                            child: AnimatedContainer(
-                              duration: Duration(seconds: 1),
-                              color: Colors.black,
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        formatDuration(curPos),
+                        style: TextStyle(fontSize: 11),
+                      ),
+                      SizedBox(width: 8),
+                      Flexible(
+                        child: Stack(
+                          children: [
+                            Container(
+                              color: Color.fromRGBO(229, 229, 229, 1.0),
                               height: 3,
                             ),
-                          ),
-                        ],
+                            FractionallySizedBox(
+                              widthFactor: progressBarWidth,
+                              child: AnimatedContainer(
+                                duration: Duration(seconds: 1),
+                                color: Colors.black,
+                                height: 3,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      formatDuration(duration),
-                      style: TextStyle(fontSize: 11),
-                    ),
-                  ],
-                ),
-              ],
+                      SizedBox(width: 10),
+                      Text(
+                        formatDuration(duration),
+                        style: TextStyle(fontSize: 11),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          Flexible(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextIcon(
-                  icon: 'HQ',
-                  color: ICON_STYLE.hoverColor,
-                  message: '打开歌词',
-                  padding: EdgeInsets.fromLTRB(6, 2, 6, 2),
-                  size: 9,
-                ),
-                SizedBox(width: 19),
-                ZIcon(
-                  icon: Icons.gesture_rounded,
-                  color: ICON_STYLE.defaultColor,
-                  hoverColor: ICON_STYLE.hoverColor,
-                  message: '音效',
-                  size: 28,
-                ),
-                SizedBox(width: 19),
-                TextIcon(
-                  icon: '词',
-                  color: ICON_STYLE.defaultColor,
-                  hoverColor: ICON_STYLE.hoverColor,
-                  message: '打开歌词',
-                  padding: EdgeInsets.fromLTRB(3, 0, 3, 0),
-                  size: 13,
-                ),
-                SizedBox(width: 19),
-                ZIcon(
-                  icon: Icons.playlist_play_rounded,
-                  color: ICON_STYLE.defaultColor,
-                  hoverColor: ICON_STYLE.hoverColor,
-                  message: '播放队列',
-                  size: 36,
-                ),
-              ],
+
+            Flexible(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextIcon(
+                    icon: 'HQ',
+                    color: ICON_STYLE.hoverColor,
+                    message: '打开歌词',
+                    padding: EdgeInsets.fromLTRB(6, 2, 6, 2),
+                    size: 9,
+                  ),
+                  SizedBox(width: 19),
+                  ZIcon(
+                    icon: Icons.gesture_rounded,
+                    color: ICON_STYLE.defaultColor,
+                    hoverColor: ICON_STYLE.hoverColor,
+                    message: '音效',
+                    size: 28,
+                  ),
+                  SizedBox(width: 19),
+                  TextIcon(
+                    icon: '词',
+                    color: ICON_STYLE.defaultColor,
+                    hoverColor: ICON_STYLE.hoverColor,
+                    message: '打开歌词',
+                    padding: EdgeInsets.fromLTRB(3, 0, 3, 0),
+                    size: 13,
+                  ),
+                  SizedBox(width: 19),
+                  ZIcon(
+                    icon: Icons.playlist_play_rounded,
+                    color: ICON_STYLE.defaultColor,
+                    hoverColor: ICON_STYLE.hoverColor,
+                    message: '播放队列',
+                    size: 36,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

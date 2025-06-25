@@ -2,7 +2,7 @@
 
 A new Flutter project.
 
-![alt text](assets/images/image/image.png)
+![界面](assets/images/image/Snipaste_2025-06-25_17-01-08.png)
 
 ## Getting Started
 
