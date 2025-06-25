@@ -3,15 +3,83 @@
  * @since: 2025-05-28
  * player.dart
 */
+import 'dart:async';
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:qqmusic/components/z_icon/z_icon.dart';
 import 'package:qqmusic/components/text_icon/text_icon.dart' show TextIcon;
 import 'package:qqmusic/const/const.dart'
     show PRIMARY_COLOR, PRIMARY_ICON_COLOR;
 import 'package:qqmusic/const/icon-style.dart' show ICON_STYLE;
+import 'package:qqmusic/tools/format_duration.dart';
 
-class Player extends StatelessWidget {
+class Player extends StatefulWidget {
   const Player({super.key});
+
+  @override
+  State<Player> createState() => _PlayerState();
+}
+
+class _PlayerState extends State<Player> {
+  final soloud = SoLoud.instance;
+  SoundHandle? handle;
+  AudioSource? source;
+  Duration duration = Duration(seconds: 0);
+  Duration curPos = Duration(seconds: 0);
+  bool isPaused = true;
+  late Timer timer;
+  double progressBarWidth = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void initSource() async {
+    source = await soloud.loadUrl(
+      'http://isure6-stream-qqmusic.a.bdycdn.cn/aqqmusic.tc.qq.com/O600003FE6zi2r4TAF.ogg?fromtag=120073&guid=6435693729&qqm_typec_md5hash=ab2968ef8d57fa304b1eca42cb6704da&qqm_typec_timestamp=685a398a&uin=1836017030&vkey=79ECE0D5B2F0B93BE31888E32E07A38460D91A62671726C779BED52E9A39566BEF36461DF254CD94581F111AB20154CB3C7FB93FAE7B0205__v215257eb0',
+    );
+
+    source!.allInstancesFinished.first.then((_) {
+      soloud.disposeSource(source!);
+      timer.cancel();
+    });
+
+    // handle
+  }
+
+  void initHandle() async {
+    handle = await soloud.play(source!);
+    setState(() {
+      duration = soloud.getLength(source!);
+      isPaused = false;
+    });
+    initTimer();
+  }
+
+  void initTimer() {
+    if (handle != null) {
+      timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+        setState(() {
+          curPos = soloud.getPosition(handle!);
+
+          print('curpos = ${curPos.toString()}');
+          progressBarWidth = curPos.inMicroseconds / duration.inMicroseconds;
+        });
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    // player.dispose();
+    timer.cancel();
+    SoLoud.instance.deinit();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,24 +180,48 @@ class Player extends StatelessWidget {
                     ),
                     SizedBox(width: 18),
                     // pause
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: Tooltip(
-                        message: '播放',
-                        padding: EdgeInsets.all(0),
-                        waitDuration: const Duration(seconds: 1),
-                        textStyle: TextStyle(color: Colors.black),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.black),
-                        ),
-                        child: Container(
-                          padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
+                    GestureDetector(
+                      onTap: () {
+                        if (handle != null) {
+                          SoLoud.instance.setPause(
+                            handle!,
+                            !SoLoud.instance.getPause(handle!),
+                          );
+                          setState(() {
+                            isPaused = SoLoud.instance.getPause(handle!);
+                            if (isPaused) {
+                              timer.cancel();
+                            } else {
+                              initTimer();
+                            }
+                          });
+                        }
+                      },
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: Tooltip(
+                          message: isPaused ? '播放' : '暂停',
+                          padding: EdgeInsets.all(0),
+                          waitDuration: const Duration(seconds: 1),
+                          textStyle: TextStyle(color: Colors.black),
                           decoration: BoxDecoration(
-                            color: PRIMARY_ICON_COLOR,
-                            borderRadius: BorderRadius.circular(60),
+                            color: Colors.white,
+                            border: Border.all(color: Colors.black),
                           ),
-                          child: Icon(Icons.play_arrow_rounded, size: 28),
+                          child: Container(
+                            padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
+                            decoration: BoxDecoration(
+                              color: PRIMARY_ICON_COLOR,
+                              borderRadius: BorderRadius.circular(60),
+                            ),
+                            child: Icon(
+                              isPaused
+                                  ? Icons.play_arrow_rounded
+                                  : Icons.pause_rounded,
+                              size: 28,
+                            ),
+                            // child: Icon(Icons.pause_rounded, size: 28),
+                          ),
                         ),
                       ),
                     ),
@@ -153,16 +245,34 @@ class Player extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Text('00:00', style: TextStyle(fontSize: 11)),
+                    Text(
+                      formatDuration(curPos),
+                      style: TextStyle(fontSize: 11),
+                    ),
                     SizedBox(width: 8),
                     Flexible(
-                      child: Container(
-                        color: Color.fromRGBO(229, 229, 229, 1.0),
-                        height: 3,
+                      child: Stack(
+                        children: [
+                          Container(
+                            color: Color.fromRGBO(229, 229, 229, 1.0),
+                            height: 3,
+                          ),
+                          FractionallySizedBox(
+                            widthFactor: progressBarWidth,
+                            child: AnimatedContainer(
+                              duration: Duration(seconds: 1),
+                              color: Colors.black,
+                              height: 3,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     SizedBox(width: 10),
-                    Text('03:24', style: TextStyle(fontSize: 11)),
+                    Text(
+                      formatDuration(duration),
+                      style: TextStyle(fontSize: 11),
+                    ),
                   ],
                 ),
               ],

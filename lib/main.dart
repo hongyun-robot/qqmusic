@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:go_router/go_router.dart'
     show GoRoute, GoRouter, GoRouterState, RouteBase, ShellRoute;
 import 'package:qqmusic/api/song_list/song_list.dart';
@@ -58,6 +59,8 @@ void main() async {
 
   UserApi().init();
   SongListApi().init();
+
+  await SoLoud.instance.init();
 
   FlutterError.onError = (FlutterErrorDetails details) {
     if (details.library == 'rendering library' ||

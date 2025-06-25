@@ -44,7 +44,7 @@ class _LoginDialogState extends State<LoginDialog> {
         if (value != null) {
           if (value.code == 100) {
             timer.cancel();
-            File file = QCookie.getCookieFile();
+            File file = QCookie.file;
             QCookie().fromJson(value.result!.toJson());
             UserApi().id = QCookie().uin;
             file.writeAsStringSync(jsonEncode(value.result));

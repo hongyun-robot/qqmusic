@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:qqmusic/api/user/user.dart';
+import 'package:qqmusic/model/cookie.dart';
 import 'package:qqmusic/model/m_detail.dart';
 import 'package:qqmusic/tools/logger.dart';
 
@@ -20,9 +21,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserLoginState(isLogin: true));
         emit(UserLoaded(user));
       } else {
-        Logger.instance.e(user.errMsg);
-        final refresh = await UserApi().refresh();
-        print(refresh);
+        Logger.instance.e('[未登录] ${user.errMsg}');
+        QCookie().clear();
+        // final refresh = await UserApi().refresh();
+        // print(refresh);
         emit(UserLoginState(isLogin: false));
       }
     });
