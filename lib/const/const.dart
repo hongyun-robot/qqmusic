@@ -21,3 +21,15 @@ enum ROUTER_NAME {
   final String name;
   final String explain;
 }
+
+enum SongType {
+  standard(type: 'MP3_128'),
+  HQ(type: 'MP3_320'),
+  SQ(type: 'FLAC'),
+  ATMOS_51(type: 'ATMOS_51'),
+  ATMOS_2(type: 'ATMOS_2'),
+  MASTER(type: 'MASTER');
+
+  const SongType({required this.type});
+  final String type;
+}

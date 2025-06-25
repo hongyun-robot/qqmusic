@@ -18,7 +18,6 @@ import 'package:qqmusic/model/songlist/collect_song.dart';
 import 'package:qqmusic/pages/personal_homepage/components/model/tab_config.dart';
 import 'package:qqmusic/pages/personal_homepage/components/my_music_song.dart'
     show MyMusicSong;
-import 'package:qqmusic/tools/func_utils.dart';
 
 class MyMusic extends StatefulWidget {
   const MyMusic({super.key});

@@ -7,6 +7,7 @@ import 'package:qqmusic/tools/path.dart' show PathHelper;
 
 class QCookie {
   static final QCookie _instance = QCookie._internal();
+  static get file => File('${PathHelper().getHomePath}/$cookiePathDirName');
 
   factory QCookie() {
     return _instance;
@@ -15,16 +16,52 @@ class QCookie {
   QCookie._internal();
 
   init() async {
-    File file = File('${PathHelper().getHomePath}/$cookiePathDirName');
     if (file.existsSync()) {
       String value = await file.readAsString();
+      if (value.isEmpty) return;
       try {
         _instance.fromJson(jsonDecode(value));
       } catch (e) {
-        Logger.instance.d(e);
+        Logger.instance.d('[暂无cookie]$e');
       }
     }
   }
+
+  void clear() {
+    pt2Gguin = null;
+    superuin = null;
+    supertoken = null;
+    superkey = null;
+    ptRecentUins = null;
+    rk = null;
+    ptnick1836017030 = null;
+    ptcz = null;
+    pUin = null;
+    pt4Token = null;
+    pSkey = null;
+    ptOauthToken = null;
+    ptLoginType = null;
+    euin = null;
+    qmKeyst = null;
+    qqmusicKey = null;
+    tmeLoginType = null;
+    psrfAccessTokenExpiresAt = null;
+    psrfQqopenid = null;
+    psrfMusickeyCreatetime = null;
+    psrfQqunionid = null;
+    psrfQqaccessToken = null;
+    musicIgnorePskey = null;
+    uin = null;
+    psrfQqrefreshToken = null;
+
+    file.writeAsString('');
+  }
+
+  /// 获取文档目录文件
+  // static File getCookieFile() {
+  //   String path = PathHelper().getHomePath;
+  //   return File('$path/$cookiePathDirName');
+  // }
 
   String? pt2Gguin;
   String? superuin;
@@ -130,37 +167,6 @@ class QCookie {
     }
   }
 
-  void clear() {
-    pt2Gguin = null;
-    superuin = null;
-    supertoken = null;
-    superkey = null;
-    ptRecentUins = null;
-    rk = null;
-    ptnick1836017030 = null;
-    ptcz = null;
-    pUin = null;
-    pt4Token = null;
-    pSkey = null;
-    ptOauthToken = null;
-    ptLoginType = null;
-    euin = null;
-    qmKeyst = null;
-    qqmusicKey = null;
-    tmeLoginType = null;
-    psrfAccessTokenExpiresAt = null;
-    psrfQqopenid = null;
-    psrfMusickeyCreatetime = null;
-    psrfQqunionid = null;
-    psrfQqaccessToken = null;
-    musicIgnorePskey = null;
-    uin = null;
-    psrfQqrefreshToken = null;
-
-    File file = getCookieFile();
-    file.writeAsString('');
-  }
-
   static QCookie fromJsonStatic(Map<String, dynamic> json) {
     final instance = QCookie();
     instance.fromJson(json);
@@ -204,11 +210,5 @@ class QCookie {
   @override
   String toString() {
     return toJson().entries.map((el) => '${el.key}=${el.value}; ').join('; ');
-  }
-
-  /// 获取文档目录文件
-  static File getCookieFile() {
-    String path = PathHelper().getHomePath;
-    return File('$path/$cookiePathDirName');
   }
 }

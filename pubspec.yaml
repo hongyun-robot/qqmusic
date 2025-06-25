@@ -21,6 +21,8 @@ dependencies:
   logger: ^2.5.0
   animations: ^2.0.11
   intl: ^0.20.2
+  audioplayers: ^6.5.0
+  flutter_soloud: ^3.1.12
 
 dev_dependencies:
   flutter_test:
@@ -71,4 +73,3 @@ flutter:
         - asset: assets/fonts/MSYH-Regular.ttc
         - asset: assets/fonts/MSYH-Bold.ttc
           weight: 700
-

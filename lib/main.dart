@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:go_router/go_router.dart'
     show GoRoute, GoRouter, GoRouterState, RouteBase, ShellRoute;
+import 'package:qqmusic/api/song/song.dart';
 import 'package:qqmusic/api/song_list/song_list.dart';
 import 'package:qqmusic/api/user/user.dart';
+import 'package:qqmusic/bloc/music_bloc.dart';
 import 'package:qqmusic/bloc/scroll_bloc.dart';
 import 'package:qqmusic/bloc/user_bloc.dart' show UserBloc;
 import 'package:qqmusic/components/transition_resolver.dart'
@@ -58,6 +61,9 @@ void main() async {
 
   UserApi().init();
   SongListApi().init();
+  SongApi().init();
+
+  await SoLoud.instance.init();
 
   FlutterError.onError = (FlutterErrorDetails details) {
     if (details.library == 'rendering library' ||
@@ -82,10 +88,13 @@ class MyApp extends StatefulWidget {
   // Bloc
   late final UserBloc userBloc;
   late final ScrollBloc scrollBloc;
+  late final MusicBloc musicBloc;
 
   MyApp({super.key}) {
     userBloc = UserBloc();
     scrollBloc = ScrollBloc();
+    musicBloc = MusicBloc();
+
     _router = GoRouter(
       navigatorKey: _rootNavigatorKey,
       initialLocation: '/PersonalHomepage',
@@ -97,6 +106,7 @@ class MyApp extends StatefulWidget {
               providers: [
                 BlocProvider.value(value: userBloc),
                 BlocProvider.value(value: scrollBloc),
+                BlocProvider.value(value: musicBloc),
               ],
               child: HomePage(child: child),
             );
