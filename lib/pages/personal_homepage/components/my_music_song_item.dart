@@ -11,6 +11,7 @@ import 'package:qqmusic/components/z_icon/z_icon.dart';
 import 'package:qqmusic/components/z_text/z_text.dart' show ZText;
 import 'package:qqmusic/const/const.dart' show PRIMARY_COLOR;
 import 'package:qqmusic/const/icon-style.dart' show ICON_STYLE;
+import 'package:qqmusic/model/song/song.dart';
 import 'package:qqmusic/model/songlist/collect_song.dart';
 import 'package:qqmusic/pages/personal_homepage/components/z_text_span.dart';
 import 'package:qqmusic/tools/is_vip.dart';
@@ -21,10 +22,12 @@ class MyMusicSongItem extends StatefulWidget {
     required this.data,
     this.active = false,
     this.onTap,
+    this.onTapPlay,
   });
   final Songlist data;
   final bool active;
   final void Function(Songlist data)? onTap;
+  final void Function(Songlist data)? onTapPlay;
 
   @override
   State<MyMusicSongItem> createState() => _MyMusicSongItemState();
@@ -73,9 +76,9 @@ class _MyMusicSongItemState extends State<MyMusicSongItem> {
     }
   }
 
-  void onTapPlay() {
-    _musicBloc.add(CurrentMusicStateEvent(widget.data));
-  }
+  // void onTapPlay() {
+  //   _musicBloc.add(CurrentMusicStateEvent(widget.data));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -220,7 +223,11 @@ class _MyMusicSongItemState extends State<MyMusicSongItem> {
                                   icon: Icons.play_arrow_rounded,
                                   color: Color.fromRGBO(96, 96, 96, 1.0),
                                   hoverColor: ICON_STYLE.hoverColor,
-                                  onTap: onTapPlay,
+                                  onTap: () {
+                                    if (widget.onTapPlay != null) {
+                                      widget.onTapPlay!(widget.data);
+                                    }
+                                  },
                                 ),
                                 ZIcon(
                                   icon: Icons.add_circle_rounded,

@@ -18,15 +18,18 @@ import 'package:qqmusic/const/const.dart'
 import 'package:qqmusic/const/icon-style.dart' show ICON_STYLE;
 import 'package:qqmusic/model/song/song.dart';
 import 'package:qqmusic/tools/format_duration.dart';
+import 'package:qqmusic/tools/music_img_url.dart';
 
 class Player extends StatefulWidget {
-  const Player({super.key});
+  const Player({super.key, required this.onTapMusicList});
+  final void Function() onTapMusicList;
 
   @override
   State<Player> createState() => _PlayerState();
 }
 
 class _PlayerState extends State<Player> {
+  late final MusicBloc _musicBloc;
   final soloud = SoLoud.instance;
   SoundHandle? handle;
   AudioSource? source;
@@ -38,6 +41,7 @@ class _PlayerState extends State<Player> {
 
   @override
   void initState() {
+    _musicBloc = context.read<MusicBloc>();
     super.initState();
   }
 
@@ -52,6 +56,7 @@ class _PlayerState extends State<Player> {
     source!.allInstancesFinished.first.then((_) {
       soloud.disposeSource(source!);
       timer!.cancel();
+      _musicBloc.add(CurMusicAddEvent());
     });
     initHandle();
 
@@ -83,7 +88,6 @@ class _PlayerState extends State<Player> {
         setState(() {
           curPos = soloud.getPosition(handle!);
 
-          print('curpos = ${curPos.toString()}');
           progressBarWidth = curPos.inMicroseconds / duration.inMicroseconds;
         });
       });
@@ -101,6 +105,33 @@ class _PlayerState extends State<Player> {
     super.dispose();
   }
 
+  void onTapMusicList() {
+    widget.onTapMusicList();
+  }
+
+  void onTapNextMusic() {
+    _musicBloc.add(CurMusicAddEvent());
+  }
+
+  void onTapPrevMusic() {
+    _musicBloc.add(CurMusicSubEvent());
+  }
+
+  void onTapPlayOrPause() {
+    if (handle != null) {
+      SoLoud.instance.setPause(handle!, !SoLoud.instance.getPause(handle!));
+      setState(() {
+        isPaused = SoLoud.instance.getPause(handle!);
+        if (isPaused) {
+          timer!.cancel();
+        } else {
+          initTimer();
+        }
+      });
+    }
+  }
+
+  /// 生成 TextSpan 列表
   List<InlineSpan> joinSingerName(
     List<Singer> singer,
     void Function(Singer singer) onTap,
@@ -136,7 +167,10 @@ class _PlayerState extends State<Player> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(14, 0, 13, 0),
       child: BlocListener<MusicBloc, MusicState>(
-        listenWhen: (previous, current) => current is CurrentMusicInfoState,
+        listenWhen:
+            (previous, current) =>
+                current is CurrentMusicInfoState ||
+                current is CurrentMusicListState,
         listener: (context, state) {
           if (state is CurrentMusicInfoState) {
             SongApi()
@@ -149,6 +183,10 @@ class _PlayerState extends State<Player> {
                   }
                 });
           }
+
+          // if (state is CurrentMusicListState) {
+
+          // }
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -174,7 +212,7 @@ class _PlayerState extends State<Player> {
                             height: 50,
                             fit: BoxFit.fill,
                             image: NetworkImage(
-                              "https://y.qq.com/music/photo_new/T002R300x300M000${state.data.data!.trackInfo.album.pmid != '' ? state.data.data!.trackInfo.album.pmid : state.data.data!.trackInfo.vs[1]}.jpg?max_age=2592000",
+                              getMusicImageUrl(state.data.data!.trackInfo),
                             ),
                           ),
                         )
@@ -308,27 +346,13 @@ class _PlayerState extends State<Player> {
                           hoverColor: ICON_STYLE.hoverColor,
                           message: '上一首',
                           size: 28,
+                          onTap: onTapPrevMusic,
                         ),
                       ),
                       SizedBox(width: 18),
                       // pause
                       GestureDetector(
-                        onTap: () {
-                          if (handle != null) {
-                            SoLoud.instance.setPause(
-                              handle!,
-                              !SoLoud.instance.getPause(handle!),
-                            );
-                            setState(() {
-                              isPaused = SoLoud.instance.getPause(handle!);
-                              if (isPaused) {
-                                timer!.cancel();
-                              } else {
-                                initTimer();
-                              }
-                            });
-                          }
-                        },
+                        onTap: onTapPlayOrPause,
                         child: MouseRegion(
                           cursor: SystemMouseCursors.click,
                           child: Tooltip(
@@ -364,6 +388,7 @@ class _PlayerState extends State<Player> {
                         hoverColor: ICON_STYLE.hoverColor,
                         message: '下一首',
                         size: 28,
+                        onTap: onTapNextMusic,
                       ),
                       SizedBox(width: 32),
                       ZIcon(
@@ -446,6 +471,7 @@ class _PlayerState extends State<Player> {
                     hoverColor: ICON_STYLE.hoverColor,
                     message: '播放队列',
                     size: 36,
+                    onTap: onTapMusicList,
                   ),
                 ],
               ),

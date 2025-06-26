@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder;
 import 'package:provider/provider.dart';
+import 'package:qqmusic/bloc/music_bloc.dart';
 import 'package:qqmusic/bloc/scroll_bloc.dart';
+import 'package:qqmusic/components/play_list_item/play_list_item.dart';
 import 'package:qqmusic/components/player/player.dart';
 import 'package:qqmusic/components/sidebar/sidebar.dart';
 import 'package:qqmusic/components/text_icon/text_icon.dart';
@@ -20,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   final ScrollController _controller = ScrollController();
   late final ScrollBloc _scrollBloc;
   bool isShowTopBtn = false;
+  bool isShowEndDrawer = false;
 
   @override
   void initState() {
@@ -72,40 +75,44 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Topbar(),
                             Expanded(
-                              child: Stack(
-                                children: [
-                                  SingleChildScrollView(
-                                    controller: _controller,
-                                    child: Container(
-                                      constraints: constraints.copyWith(
-                                        minHeight: 0,
-                                        maxHeight: double.infinity,
-                                      ),
-                                      clipBehavior: Clip.hardEdge,
-                                      padding: const EdgeInsets.only(
-                                        left: 40,
-                                        right: 40,
-                                        top: 23,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Color.fromRGBO(
-                                          246,
-                                          246,
-                                          246,
-                                          1.0,
+                              child: Container(
+                                clipBehavior: Clip.hardEdge,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.circular(8),
+                                    bottomRight: Radius.circular(8),
+                                  ),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    SingleChildScrollView(
+                                      controller: _controller,
+                                      child: Container(
+                                        constraints: constraints.copyWith(
+                                          minHeight: 0,
+                                          maxHeight: double.infinity,
                                         ),
-                                        borderRadius: const BorderRadius.only(
-                                          bottomLeft: Radius.circular(8),
-                                          bottomRight: Radius.circular(8),
+                                        clipBehavior: Clip.hardEdge,
+                                        padding: const EdgeInsets.only(
+                                          left: 40,
+                                          right: 40,
+                                          top: 23,
                                         ),
-                                      ),
-                                      child: IntrinsicHeight(
-                                        child: widget.child,
+                                        decoration: BoxDecoration(
+                                          color: Color.fromRGBO(
+                                            246,
+                                            246,
+                                            246,
+                                            1.0,
+                                          ),
+                                        ),
+                                        child: IntrinsicHeight(
+                                          child: widget.child,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  isShowTopBtn
-                                      ? Positioned(
+                                    if (isShowTopBtn)
+                                      Positioned(
                                         bottom: 10,
                                         right: 30,
                                         child: TextIcon(
@@ -128,9 +135,97 @@ class _HomePageState extends State<HomePage> {
                                             );
                                           },
                                         ),
-                                      )
-                                      : SizedBox(),
-                                ],
+                                      ),
+
+                                    // if (isShowEndDrawer)
+                                    AnimatedPositioned(
+                                      curve: Curves.easeInOut,
+                                      duration: Duration(milliseconds: 300),
+                                      right: isShowEndDrawer ? 10 : -448,
+                                      top: 0,
+                                      bottom: 0,
+                                      child: Container(
+                                        padding: EdgeInsets.fromLTRB(
+                                          10,
+                                          37,
+                                          10,
+                                          0,
+                                        ),
+                                        clipBehavior: Clip.hardEdge,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10),
+                                          ),
+                                        ),
+                                        width: 448,
+                                        child: BlocBuilder<
+                                          MusicBloc,
+                                          MusicState
+                                        >(
+                                          buildWhen:
+                                              (previous, current) =>
+                                                  current
+                                                      is CurrentMusicInfoState,
+                                          builder: (context, state) {
+                                            return Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      '播放队列',
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                    Icon(
+                                                      Icons
+                                                          .format_list_numbered_rounded,
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 28),
+                                                if (state
+                                                    is CurrentMusicInfoState)
+                                                  Text(
+                                                    '共${state.listData?.length ?? 0}首歌曲',
+                                                    style: TextStyle(
+                                                      color: Color.fromRGBO(
+                                                        102,
+                                                        102,
+                                                        102,
+                                                        1.0,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                SizedBox(height: 8),
+                                                Expanded(
+                                                  child:
+                                                      state is CurrentMusicInfoState
+                                                          ? state.listData !=
+                                                                  null
+                                                              ? PlayListItem(
+                                                                listData:
+                                                                    state
+                                                                        .listData!,
+                                                              )
+                                                              : SizedBox()
+                                                          : SizedBox(),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             SizedBox(height: 12),
@@ -142,7 +237,13 @@ class _HomePageState extends State<HomePage> {
                                   Radius.circular(8),
                                 ),
                               ),
-                              child: Player(),
+                              child: Player(
+                                onTapMusicList: () {
+                                  setState(() {
+                                    isShowEndDrawer = !isShowEndDrawer;
+                                  });
+                                },
+                              ),
                             ),
                           ],
                         ),

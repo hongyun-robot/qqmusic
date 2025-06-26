@@ -5,7 +5,15 @@ sealed class MusicEvent {}
 
 class CurrentMusicStateEvent extends MusicEvent {
   final Songlist data;
-  CurrentMusicStateEvent(this.data);
+  final List<Songlist> listData;
+  CurrentMusicStateEvent(this.data, this.listData);
 }
 
-class CurrentMusicInfoStateEvent extends MusicEvent {}
+// class CurrentMusicListStateEvent extends MusicEvent {
+//   // final Songlist data;
+//   // CurrentMusicListStateEvent(this.data, this.listData);
+// }
+
+class CurMusicAddEvent extends MusicEvent {}
+
+class CurMusicSubEvent extends MusicEvent {}

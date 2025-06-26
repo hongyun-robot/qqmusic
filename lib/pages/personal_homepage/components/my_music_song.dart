@@ -5,9 +5,7 @@
 */
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:qqmusic/bloc/scroll_bloc.dart';
-import 'package:qqmusic/components/z_text/z_text.dart';
-import 'package:qqmusic/const/icon-style.dart';
+import 'package:qqmusic/bloc/music_bloc.dart';
 import 'package:qqmusic/model/songlist/collect_song.dart';
 import 'package:qqmusic/pages/personal_homepage/components/my_music_song_item.dart';
 
@@ -36,6 +34,14 @@ class _MyMusicSongState extends State<MyMusicSong> {
                     setState(() {
                       activeId = data.id;
                     });
+                  },
+                  onTapPlay: (data) {
+                    context.read<MusicBloc>().add(
+                      CurrentMusicStateEvent(data, widget.data),
+                    );
+                    // context.read<MusicBloc>().add(
+                    //   CurrentMusicListStateEvent(data, widget.data),
+                    // );
                   },
                 ),
               )
