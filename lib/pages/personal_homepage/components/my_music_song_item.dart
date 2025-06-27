@@ -14,6 +14,7 @@ import 'package:qqmusic/const/icon-style.dart' show ICON_STYLE;
 import 'package:qqmusic/model/song/song.dart';
 import 'package:qqmusic/model/songlist/collect_song.dart';
 import 'package:qqmusic/pages/personal_homepage/components/z_text_span.dart';
+import 'package:qqmusic/tools/get_display_text.dart';
 import 'package:qqmusic/tools/is_vip.dart';
 
 class MyMusicSongItem extends StatefulWidget {
@@ -43,13 +44,13 @@ class _MyMusicSongItemState extends State<MyMusicSongItem> {
   late final bool isATMOS_2; // 臻品全景声2.0
   late final bool isATMOS_51; // 臻品音质2.0
 
-  String? getDisplayText() {
-    if (isDolby) return '杜比';
-    if (isMASTER) return '臻品母带';
-    if (isATMOS_2) return '全景声';
-    if (isATMOS_51) return '臻品音质';
-    return null;
-  }
+  // String? getDisplayText() {
+  //   if (isDolby) return '杜比';
+  //   if (isMASTER) return '臻品母带';
+  //   if (isATMOS_2) return '全景声';
+  //   if (isATMOS_51) return '臻品音质';
+  //   return null;
+  // }
 
   @override
   void initState() {
@@ -157,59 +158,7 @@ class _MyMusicSongItemState extends State<MyMusicSongItem> {
                               // 图标
                               Row(
                                 spacing: 5,
-                                children: [
-                                  isVip
-                                      ? TextIcon(
-                                        icon: 'VIP',
-                                        color: ICON_STYLE.hoverColor,
-                                        padding: EdgeInsets.fromLTRB(
-                                          3,
-                                          0,
-                                          3,
-                                          0,
-                                        ),
-                                        size: 8,
-                                        cursor: SystemMouseCursors.basic,
-                                      )
-                                      : SizedBox(),
-                                  getDisplayText() != null
-                                      ? TextIcon(
-                                        icon: getDisplayText()!,
-                                        color: Color.fromRGBO(
-                                          232,
-                                          189,
-                                          101,
-                                          1.0,
-                                        ),
-                                        padding: EdgeInsets.fromLTRB(
-                                          3,
-                                          0,
-                                          3,
-                                          0,
-                                        ),
-                                        size: 8,
-                                        cursor: SystemMouseCursors.basic,
-                                      )
-                                      : SizedBox(),
-                                  isMV
-                                      ? TextIcon(
-                                        icon: 'MV',
-                                        color: Color.fromRGBO(
-                                          123,
-                                          123,
-                                          123,
-                                          1.0,
-                                        ),
-                                        padding: EdgeInsets.fromLTRB(
-                                          3,
-                                          0,
-                                          3,
-                                          0,
-                                        ),
-                                        size: 8,
-                                      )
-                                      : SizedBox(),
-                                ],
+                                children: createIdentificationIcon(widget.data),
                               ),
                             ],
                           ),

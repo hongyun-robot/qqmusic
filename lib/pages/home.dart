@@ -141,86 +141,92 @@ class _HomePageState extends State<HomePage> {
                                     AnimatedPositioned(
                                       curve: Curves.easeInOut,
                                       duration: Duration(milliseconds: 300),
-                                      right: isShowEndDrawer ? 10 : -448,
+                                      right: isShowEndDrawer ? 0 : -448,
                                       top: 0,
                                       bottom: 0,
-                                      child: Container(
-                                        padding: EdgeInsets.fromLTRB(
-                                          10,
-                                          37,
-                                          10,
-                                          0,
-                                        ),
-                                        clipBehavior: Clip.hardEdge,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(10),
-                                            bottomLeft: Radius.circular(10),
+                                      child: AnimatedOpacity(
+                                        opacity: isShowEndDrawer ? 1 : 0,
+                                        curve: Curves.easeInOut,
+                                        duration: Duration(milliseconds: 300),
+                                        child: Container(
+                                          padding: EdgeInsets.fromLTRB(
+                                            10,
+                                            37,
+                                            10,
+                                            0,
                                           ),
-                                        ),
-                                        width: 448,
-                                        child: BlocBuilder<
-                                          MusicBloc,
-                                          MusicState
-                                        >(
-                                          buildWhen:
-                                              (previous, current) =>
-                                                  current
-                                                      is CurrentMusicInfoState,
-                                          builder: (context, state) {
-                                            return Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      '播放队列',
-                                                      style: TextStyle(
-                                                        color: Colors.black,
+                                          clipBehavior: Clip.hardEdge,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(10),
+                                              bottomLeft: Radius.circular(10),
+                                            ),
+                                          ),
+                                          width: 448,
+                                          child: BlocBuilder<
+                                            MusicBloc,
+                                            MusicState
+                                          >(
+                                            buildWhen:
+                                                (previous, current) =>
+                                                    current
+                                                        is CurrentMusicInfoState,
+                                            builder: (context, state) {
+                                              return Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        '播放队列',
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    Icon(
-                                                      Icons
-                                                          .format_list_numbered_rounded,
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(height: 28),
-                                                if (state
-                                                    is CurrentMusicInfoState)
-                                                  Text(
-                                                    '共${state.listData?.length ?? 0}首歌曲',
-                                                    style: TextStyle(
-                                                      color: Color.fromRGBO(
-                                                        102,
-                                                        102,
-                                                        102,
-                                                        1.0,
+                                                      Icon(
+                                                        Icons
+                                                            .format_list_numbered_rounded,
                                                       ),
-                                                    ),
+                                                    ],
                                                   ),
-                                                SizedBox(height: 8),
-                                                Expanded(
-                                                  child:
-                                                      state is CurrentMusicInfoState
-                                                          ? state.listData !=
-                                                                  null
-                                                              ? PlayListItem(
-                                                                listData:
-                                                                    state
-                                                                        .listData!,
-                                                              )
-                                                              : SizedBox()
-                                                          : SizedBox(),
-                                                ),
-                                              ],
-                                            );
-                                          },
+                                                  SizedBox(height: 28),
+                                                  if (state
+                                                      is CurrentMusicInfoState)
+                                                    Text(
+                                                      '共${state.listData?.length ?? 0}首歌曲',
+                                                      style: TextStyle(
+                                                        color: Color.fromRGBO(
+                                                          102,
+                                                          102,
+                                                          102,
+                                                          1.0,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  SizedBox(height: 8),
+                                                  Expanded(
+                                                    child:
+                                                        state
+                                                                is CurrentMusicInfoState
+                                                            ? state.listData !=
+                                                                    null
+                                                                ? PlayListItem(
+                                                                  listData:
+                                                                      state
+                                                                          .listData!,
+                                                                )
+                                                                : SizedBox()
+                                                            : SizedBox(),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ),
