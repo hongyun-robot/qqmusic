@@ -77,16 +77,16 @@ class Data {
 
 class Req1 {
   late int code;
-  Data1? data;
+  late Data1 data;
 
-  Req1({required this.code, this.data});
+  Req1({required this.code, required this.data});
 
   Req1.fromJson(Map<String, dynamic> json) {
     if (json["code"] is int) {
       code = json["code"];
     }
     if (json["data"] is Map) {
-      data = json["data"] == null ? null : Data1.fromJson(json["data"]);
+      data = (json["data"] == null ? null : Data1.fromJson(json["data"]))!;
     }
   }
 
@@ -97,9 +97,7 @@ class Req1 {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["code"] = code;
-    if (data != null) {
-      _data["data"] = data?.toJson();
-    }
+    _data["data"] = data.toJson();
     return _data;
   }
 }

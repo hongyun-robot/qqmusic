@@ -171,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                                             buildWhen:
                                                 (previous, current) =>
                                                     current
-                                                        is CurrentMusicInfoState,
+                                                        is CurrentPlayListState,
                                             builder: (context, state) {
                                               return Column(
                                                 crossAxisAlignment:
@@ -196,7 +196,7 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                   SizedBox(height: 28),
                                                   if (state
-                                                      is CurrentMusicInfoState)
+                                                      is CurrentPlayListState)
                                                     Text(
                                                       '共${state.listData?.length ?? 0}首歌曲',
                                                       style: TextStyle(
@@ -211,14 +211,16 @@ class _HomePageState extends State<HomePage> {
                                                   SizedBox(height: 8),
                                                   Expanded(
                                                     child:
-                                                        state
-                                                                is CurrentMusicInfoState
+                                                        state is CurrentPlayListState
                                                             ? state.listData !=
                                                                     null
                                                                 ? PlayListItem(
                                                                   listData:
                                                                       state
                                                                           .listData!,
+                                                                  dirinfo:
+                                                                      state
+                                                                          .dirinfo!,
                                                                 )
                                                                 : SizedBox()
                                                             : SizedBox(),

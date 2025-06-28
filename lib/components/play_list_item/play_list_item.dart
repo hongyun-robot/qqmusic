@@ -7,6 +7,7 @@ import 'dart:math' as math show pi;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:qqmusic/api/song_list/song_list.dart';
 import 'package:qqmusic/bloc/music_bloc.dart';
 import 'package:qqmusic/components/z_icon/z_icon.dart';
 import 'package:qqmusic/const/icon-style.dart' show ICON_STYLE;
@@ -17,19 +18,40 @@ import 'package:qqmusic/tools/get_display_text.dart'
 import 'package:qqmusic/tools/music_img_url.dart';
 
 class PlayListItem extends StatefulWidget {
-  const PlayListItem({super.key, required this.listData});
+  const PlayListItem({
+    super.key,
+    required this.listData,
+    required this.dirinfo,
+  });
   final List<Songlist> listData;
+  final Dirinfo dirinfo;
 
   @override
   State<PlayListItem> createState() => _PlayListItemState();
 }
 
 class _PlayListItemState extends State<PlayListItem> {
+  late MusicBloc _musicBloc;
   Color color = Colors.white;
   int mouseEnterActive = -1;
   int mouseClickActive = -1;
   int curActive = 0;
   int curClick = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _musicBloc = context.read<MusicBloc>();
+    super.initState();
+  }
+
+  void onTapFavorite(Songlist data) {
+    SongListApi().remove(widget.dirinfo.dirid, data.id).then((v) {
+      if (v.result == 100) {
+        _musicBloc.add(ReloadRequestMusicEvent(true));
+      }
+    });
+  }
 
   /// 生成 TextSpan 列表
   List<Text> joinSingerName(List<Singer> singer) {
@@ -141,10 +163,7 @@ class _PlayListItemState extends State<PlayListItem> {
                                         size: 28,
                                         onTap: () {
                                           context.read<MusicBloc>().add(
-                                            CurrentMusicStateEvent(
-                                              data.value,
-                                              widget.listData,
-                                            ),
+                                            CurrentMusicStateEvent(data.value),
                                           );
                                         },
                                       ),
@@ -193,6 +212,9 @@ class _PlayListItemState extends State<PlayListItem> {
                                   hoverColor: Color.fromRGBO(244, 85, 85, 1.0),
                                   message: '取消喜欢',
                                   size: 22,
+                                  onTap: () {
+                                    onTapFavorite(data.value);
+                                  },
                                 ),
                                 Transform.rotate(
                                   angle: math.pi / 1.5,

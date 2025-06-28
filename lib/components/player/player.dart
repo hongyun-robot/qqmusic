@@ -30,6 +30,7 @@ class Player extends StatefulWidget {
 
 class _PlayerState extends State<Player> {
   late final MusicBloc _musicBloc;
+  Song? curMusicData;
   final soloud = SoLoud.instance;
   SoundHandle? handle;
   AudioSource? source;
@@ -170,9 +171,10 @@ class _PlayerState extends State<Player> {
         listenWhen:
             (previous, current) =>
                 current is CurrentMusicInfoState ||
-                current is CurrentMusicListState,
+                current is CurrentPlayListState,
         listener: (context, state) {
           if (state is CurrentMusicInfoState) {
+            curMusicData = state.data;
             SongApi()
                 .url(state.data.data!.trackInfo.mid, SongType.standard, 0)
                 .then((v) {
@@ -182,6 +184,16 @@ class _PlayerState extends State<Player> {
                     initSource(url);
                   }
                 });
+          }
+
+          if (state is CurrentPlayListState) {
+            _musicBloc.add(
+              CurrentPlayListInIndexEvent(
+                state.listData!.indexWhere(
+                  (v) => v.id == curMusicData!.data!.trackInfo.id,
+                ),
+              ),
+            );
           }
 
           // if (state is CurrentMusicListState) {

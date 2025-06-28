@@ -4,18 +4,12 @@
  * my_music_song_item.dart
 */
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:qqmusic/bloc/music_bloc.dart';
-import 'package:qqmusic/components/text_icon/text_icon.dart' show TextIcon;
 import 'package:qqmusic/components/z_icon/z_icon.dart';
 import 'package:qqmusic/components/z_text/z_text.dart' show ZText;
 import 'package:qqmusic/const/const.dart' show PRIMARY_COLOR;
 import 'package:qqmusic/const/icon-style.dart' show ICON_STYLE;
-import 'package:qqmusic/model/song/song.dart';
 import 'package:qqmusic/model/songlist/collect_song.dart';
-import 'package:qqmusic/pages/personal_homepage/components/z_text_span.dart';
 import 'package:qqmusic/tools/get_display_text.dart';
-import 'package:qqmusic/tools/is_vip.dart';
 
 class MyMusicSongItem extends StatefulWidget {
   const MyMusicSongItem({
@@ -24,46 +18,30 @@ class MyMusicSongItem extends StatefulWidget {
     this.active = false,
     this.onTap,
     this.onTapPlay,
+    this.onTapFavorite,
   });
   final Songlist data;
   final bool active;
   final void Function(Songlist data)? onTap;
+
+  /// 点击播放按钮
   final void Function(Songlist data)? onTapPlay;
+
+  /// 点击爱心
+  final void Function(Songlist data)? onTapFavorite;
 
   @override
   State<MyMusicSongItem> createState() => _MyMusicSongItemState();
 }
 
 class _MyMusicSongItemState extends State<MyMusicSongItem> {
-  late final MusicBloc _musicBloc;
   late bool mouseInside;
-  late final bool isVip;
-  late final bool isMV;
-  late final bool isDolby;
-  late final bool isMASTER; // 臻品母带2.0
-  late final bool isATMOS_2; // 臻品全景声2.0
-  late final bool isATMOS_51; // 臻品音质2.0
-
-  // String? getDisplayText() {
-  //   if (isDolby) return '杜比';
-  //   if (isMASTER) return '臻品母带';
-  //   if (isATMOS_2) return '全景声';
-  //   if (isATMOS_51) return '臻品音质';
-  //   return null;
-  // }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _musicBloc = context.read<MusicBloc>();
     mouseInside = widget.active;
-    isVip = isVIP(widget.data);
-    isMV = widget.data.mv.vid != '';
-    isDolby = widget.data.file.sizeDolby != 0;
-    isMASTER = widget.data.file.sizeNew![0] != 0;
-    isATMOS_2 = widget.data.file.sizeNew![1] != 0;
-    isATMOS_51 = widget.data.file.sizeNew![2] != 0;
   }
 
   @override
@@ -121,9 +99,17 @@ class _MyMusicSongItemState extends State<MyMusicSongItem> {
                         Flexible(
                           child: Row(
                             children: [
-                              Icon(
-                                Icons.favorite_rounded,
-                                color: Color.fromRGBO(255, 102, 100, 1.0),
+                              ZIcon(
+                                icon: Icons.favorite_rounded,
+                                color: Color.fromRGBO(255, 106, 106, 1.0),
+                                hoverColor: Color.fromRGBO(244, 85, 85, 1.0),
+                                message: '取消喜欢',
+                                size: 22,
+                                onTap: () {
+                                  if (widget.onTapFavorite != null) {
+                                    widget.onTapFavorite!(widget.data);
+                                  }
+                                },
                               ),
                               SizedBox(width: 8),
                               // 标题
